@@ -1,8 +1,25 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Pokedex" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.Pokedex" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Colores principales -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Colores de superficie -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <!-- Estilo de la barra de estado -->
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <!-- Tipografía por defecto -->
+        <item name="android:fontFamily">@font/robotocondensed</item>
+        <!-- Radios de bordes por defecto -->
+        <item name="cornerRadius">8dp</item>
+        <!-- Elevaciones por defecto -->
+        <item name="elevationOverlayEnabled">true</item>
     </style>
 
     <style name="Theme.Pokedex" parent="Base.Theme.Pokedex" />

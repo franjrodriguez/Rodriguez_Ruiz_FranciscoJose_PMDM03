@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Paleta de colores principal -->
+    <color name="primary">#1976D2</color> <!-- Azul Firebase -->
+    <color name="primary_dark">#1565C0</color>
+    <color name="primary_light">#42A5F5</color>
+    <color name="secondary">#FFA000</color> <!-- Naranja Firebase -->
+    <color name="secondary_dark">#FF8F00</color>
+    <color name="secondary_light">#FFB74D</color>
+    <!-- Colores de fondo y superficie -->
+    <color name="background">#FAFAFA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="on_surface">#212121</color>
+    <!-- Colores de estado -->
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FF9800</color>
+    <color name="info">#2196F3</color>
+    <!-- Colores base -->
     <color name="black">#FF000000</color>
+    <color name="red">#FF0000</color>
+    <color name="yellow">#FFCC00</color>
+    <color name="blue">#3B4CCA</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorLogout">#F44336</color>
+    <color name="gray">#808080</color>
+    <color name="light_gray">#D3D3D3</color>
+    <color name="softer_gray">#E0E0E0</color>
+    <color name="almost_white_gray">#F5F5F5</color>
+    <color name="grey">#757575</color>
 </resources>
