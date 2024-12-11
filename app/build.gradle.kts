@@ -36,26 +36,25 @@ android {
 }
 
 dependencies {
+
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
     // Dependencias para Firebase Authentication
-    implementation("com.google.firebase:firebase-auth:23.1.0")
-    implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
+    implementation("com.google.firebase:firebase-auth")
 
     // Dependencias para Firebase FireStore
-    implementation("com.google.firebase:firebase-firestore:25.1.1")
-    implementation("com.google.firebase:firebase-firestore-ktx:25.1.1")
+    implementation("com.google.firebase:firebase-firestore")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.1.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
     // JSON Parsing
     implementation("com.google.code.gson:gson:2.6.1")
     implementation("com.squareup.retrofit2:converter-gson:2.1.0")
 
     // recyclerview
-    implementation("com.android.support:recyclerview-v7:25.0.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     // NavigationController
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.4")
