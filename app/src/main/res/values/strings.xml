@@ -1,8 +1,33 @@
 <resources>
     <string name="app_name">Pokedex</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_pokedex">Pokedex</string>
     <string name="menu_pokemon">Pokemon</string>
     <string name="menu_ajustes">Ajustes</string>
+    <string name="imagen_del_personaje">Imagen del pokemon</string>
+    <string name="language_settings">Idioma</string>
+    <string name="pokemon_deletion_settings">Borrar Pokemon</string>
+    <string name="allow_pokemon_deletion">Permitir borrar Pokemon Capturado</string>
+    <string name="about_title">Acerca de</string>
+    <string name="logout_title">Cerrar Sesión</string>
+    <string name="copyright">Aplicación desarrollada por Fco. José Rodriguez Ruiz</string>
+    <string name="version">Versión 1.0</string>
+    <string name="about">Sobre la aplicación</string>
+    <string name="ok_button">Aceptar</string>
+    <string name="logout_message">La sesión se ha cerrado</string>
+    <string name="configuration">Configuración</string>
+    <string name="detailtitle">Detalles Pokemon</string>
+    <string name="pokedex_title">Pokedex</string>
+    <string name="nombre_pokemon">Nombre Pokemon</string>
+    <string name="index_pokemon">#1</string>
+
+    <string-array name="language_options">
+        <item>Castellano</item>
+        <item>Inglés</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>es</item>
+        <item>en</item>
+    </string-array>
 </resources>

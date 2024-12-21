@@ -1,66 +1,126 @@
 package com.rodriguezruiz.pokedex.ui.fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.rodriguezruiz.pokedex.MainActivity;
 import com.rodriguezruiz.pokedex.R;
+import com.rodriguezruiz.pokedex.ui.activities.LoginActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SettingsFragment extends Fragment {
+import java.util.Locale;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public SettingsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+        // Cargar el archivo de preferencias
+        setPreferencesFromResource(R.xml.settings, rootKey);
+
+        // Cambiar el titulo en la Toolbar
+        if (getActivity() != null) {
+            ((MainActivity) getActivity()).setToolbarTitle(getString(R.string.configuration));
+        }
+
+        // Configurar accion para 'Acerca de'
+        Preference aboutPreference = findPreference("about");
+        if (aboutPreference != null) {
+            aboutPreference.setOnPreferenceClickListener(preference -> {
+                showAboutDialog();
+                return true;
+            });
+        }
+
+        // Configurar acción para Cerrar la sesion
+        Preference logoutPreference = findPreference("logout");
+        if (logoutPreference != null) {
+            logoutPreference.setOnPreferenceClickListener(preference -> {
+                logout();
+                return true;
+            });
+        }
+
+        // Configurar accion para cambio de idioma
+        ListPreference languagePreference = findPreference("language");
+        if (languagePreference != null) {
+            languagePreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                changeLanguage((String) newValue);
+                return true;
+            });
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+    private void logout() {
+        AuthUI.getInstance()
+                .signOut(requireContext())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // Muestra mensaje y devuelve el control a LoginActivity
+                        showLogout();
+                        gotoLoginActivity();
+                    }
+                });
+    }
+
+    private void gotoLoginActivity() {
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void showLogout() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+        builder.setTitle(R.string.logout_title)
+                .setMessage(R.string.logout_message)
+                .setIcon(R.drawable.logout)
+                .setPositiveButton(R.string.ok_button, (dialog, which) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void changeLanguage(String languageCode) {
+        // Crear un nuevo objeto locate con el código del idioma
+        Locale locale = new Locale(languageCode);
+
+        // Establecer la configuracion del idioma de la aplicacion
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(locale);
+
+        // Actualizar los recursos de la app
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+
+        // Actualizar la nueva preferencia del idioma
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        sharedPreferences.edit().putString("language", languageCode).apply();
+
+        // Reiniciar la activity para que tengan lugar los cambios de idioma
+        requireActivity().recreate();
+    }
+
+    public void showAboutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        String message = String.format("%s\n\n%s", getString(R.string.copyright), getString(R.string.version));
+
+        builder.setTitle(R.string.about)
+                .setMessage(message)
+                .setIcon(R.drawable.logopokemon)
+                .setPositiveButton(R.string.ok_button, (dialog, which) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

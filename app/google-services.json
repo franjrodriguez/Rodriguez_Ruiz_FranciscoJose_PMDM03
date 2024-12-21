@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "726210377429",
+    "project_id": "pokemon-ad195",
+    "storage_bucket": "pokemon-ad195.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726210377429:android:5f64a1cc02b2ba4d84545c",
+        "android_client_info": {
+          "package_name": "com.rodriguezruiz.pokedex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726210377429-th19gnshj2cp50kqfjgs49n6e9rllgmc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAVVGHRjcPxZtWQFqqjEVwnWwhHaHaMbk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726210377429-th19gnshj2cp50kqfjgs49n6e9rllgmc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

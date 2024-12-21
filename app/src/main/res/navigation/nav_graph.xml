@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/detailsFragment">
+    app:startDestination="@id/pokemonListFragment">
 
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.rodriguezruiz.pokedex.ui.fragment.DetailsFragment"
+        android:name="com.rodriguezruiz.pokedex.ui.fragment.DetailsPokemonFragment"
         android:label="fragment_details"
         tools:layout="@layout/fragment_details" />
     <fragment
         android:id="@+id/pokedexListFragment"
-        android:name="com.rodriguezruiz.pokedex.ui.fragment.PokedexListFragment"
+        android:name="com.rodriguezruiz.pokedex.ui.fragment.PokemonFragment"
         android:label="fragment_pokedex_list"
-        tools:layout="@layout/fragment_pokedex_list" />
+        tools:layout="@layout/fragment_pokemon" />
     <fragment
         android:id="@+id/pokemonListFragment"
-        android:name="com.rodriguezruiz.pokedex.ui.fragment.PokemonListFragment"
+        android:name="com.rodriguezruiz.pokedex.ui.fragment.PokedexFragment"
         android:label="fragment_pokemon_list"
-        tools:layout="@layout/fragment_pokemon_list" />
+        tools:layout="@layout/fragment_pokedex" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.rodriguezruiz.pokedex.ui.fragment.SettingsFragment"
