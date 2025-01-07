@@ -11,9 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rodriguezruiz.pokedex.R;
 import com.rodriguezruiz.pokedex.adapter.PokedexAdapter;
-import com.rodriguezruiz.pokedex.data.PokemonListName;
+import com.rodriguezruiz.pokedex.data.PokedexListName;
 import com.rodriguezruiz.pokedex.databinding.FragmentPokedexBinding;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
  */
 public class PokedexFragment extends Fragment {
 
-    private ArrayList<PokemonListName> listPokemon;
+    private ArrayList<PokedexListName> listPokemon;
     private FragmentPokedexBinding binding;
 
     @Nullable
@@ -45,9 +44,9 @@ public class PokedexFragment extends Fragment {
         // quedan disponibles en un ArrayList para ser mostrados (listPokemon)
 
         // Mostramos la lista en el recycledview
-        PokedexAdapter adapter = new PokedexAdapter(listPokemon, getActivity());
-        binding.recyclerviewPokemonList.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerviewPokemonList.setAdapter(adapter);
+//        PokedexAdapter adapter = new PokedexAdapter(listPokemon, getActivity());
+//        binding.recyclerviewPokedexList.setLayoutManager(new LinearLayoutManager(getContext()));
+//        binding.recyclerviewPokedexList.setAdapter(adapter);
 
     }
 }

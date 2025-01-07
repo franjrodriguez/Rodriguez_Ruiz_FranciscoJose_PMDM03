@@ -2,8 +2,8 @@
     <string name="app_name">Pokedex</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_pokedex">Pokedex</string>
-    <string name="menu_pokemon">Pokemon</string>
-    <string name="menu_ajustes">Ajustes</string>
+    <string name="menu_captured">Capturados</string>
+    <string name="menu_settings">Ajustes</string>
     <string name="imagen_del_personaje">Imagen del pokemon</string>
     <string name="language_settings">Idioma</string>
     <string name="pokemon_deletion_settings">Borrar Pokemon</string>

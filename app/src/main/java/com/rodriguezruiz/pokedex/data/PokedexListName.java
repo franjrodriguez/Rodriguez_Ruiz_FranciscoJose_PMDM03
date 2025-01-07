@@ -1,14 +1,12 @@
 package com.rodriguezruiz.pokedex.data;
 
-import android.view.View;
-
-public class PokemonListName {
+public class PokedexListName {
 
     private String namePokemon;
     private int indexPokemon;
     private String imagePokemon;
 
-    public PokemonListName(String namePokemon, int indexPokemon, String imagePokemon) {
+    public PokedexListName(String namePokemon, int indexPokemon, String imagePokemon) {
         this.namePokemon = namePokemon;
         this.indexPokemon = indexPokemon;
         this.imagePokemon = imagePokemon;

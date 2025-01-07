@@ -1,24 +1,30 @@
 package com.rodriguezruiz.pokedex;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.rodriguezruiz.pokedex.api.PokemonApiService;
-import com.rodriguezruiz.pokedex.data.PokemonData;
-import com.rodriguezruiz.pokedex.data.PokemonListName;
+import com.rodriguezruiz.pokedex.api.PokedexApiService;
+import com.rodriguezruiz.pokedex.data.PokedexListName;
 import com.rodriguezruiz.pokedex.databinding.ActivityMainBinding;
-import com.rodriguezruiz.pokedex.models.PokemonResponse;
+import com.rodriguezruiz.pokedex.models.PokedexResponse;
+import com.rodriguezruiz.pokedex.ui.fragment.CapturedFragment;
+import com.rodriguezruiz.pokedex.ui.fragment.PokedexFragment;
+import com.rodriguezruiz.pokedex.ui.fragment.SettingsFragment;
 
 import java.util.ArrayList;
 
@@ -35,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int OFFSET = 0;
     private final static int LIMIT = 150;
 
-    private NavController navController;
+    private NavController navController = null;
     private ActivityMainBinding binding;
     private FirebaseAuth firebaseAuth;
     private Toolbar toolbar;
@@ -53,87 +59,50 @@ public class MainActivity extends AppCompatActivity {
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
-        // Iniciarlar la instalcia FirebaseAuth;
-        firebaseAuth = FirebaseAuth.getInstance();
-
-        // Activar el biewBinding para acceder a los objetos de las vistas
-        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        binding.bottomNavigationView.setOnItemSelectedListener(this::selectedBottomMenu);
-
-        setSupportActionBar(binding.toolbar);
-
         // Configurar el controlador de navegacion para los fragment
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-
+        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         if (navHostFragment != null) {
-            navController = navHostFragment.getNavController();
-            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+            navController = NavHostFragment.findNavController(navHostFragment);
+            NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
             NavigationUI.setupActionBarWithNavController(this, navController);
         }
+        binding.bottomNavigation.setOnItemSelectedListener(this::selectedBottomMenu);
+        configureActionBar();
 
-        // Crea la instancia para usar Retrofit con el objetivo de leer la API
-        retrofit = new Retrofit.Builder()
-                .baseUrl(URL_API)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        // Detalle del proceso:
+        // 1.- Se inicia FirebaseAuth
+        // 2.- Si es válido se continua, y en otro caso se avisa del error y se solicita nuevamente
+        // Iniciar la instancia FirebaseAuth;
+        //firebaseAuth = FirebaseAuth.getInstance();
 
-        // Procede con la carga de la lista de pokemon desde la API para ser mostrada en el recyclerview del pokemonlistfragment
-        getListPokemon(OFFSET);
-    }
-
-    private void getListPokemon(int offset) {
-        PokemonApiService service = retrofit.create(PokemonApiService.class);
-        Call<PokemonResponse> pokemonResponseCall = service.getPokemonList(LIMIT, OFFSET);
-
-        pokemonResponseCall.enqueue(new Callback<PokemonResponse>() {
-            @Override
-            public void onResponse(Call<PokemonResponse> call, Response<PokemonResponse> response) {
-                if (response.isSuccessful()) {
-                    PokemonResponse pokemonResponse = response.body();
-                    ArrayList<PokemonListName> listaPokemon = pokemonResponse.getResults();
-
-                    // Mostrarlos de momento en consola para verificacion
-//                    for (int i = 0; i <= listaPokemon.size(); i++) {
-//                        PokemonListName p = listaPokemon.get(i);
-//                        Log.i(TAG, p.getName());
-//                    }
-                } else {
-                    // Ventana para mostrar el error y que presionen OK
-                    Log.e(TAG, " onResponse: " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PokemonResponse> call, Throwable t) {
-                // Ventana para mostrar error y presionen OK
-                Log.e(TAG, " onFailure: " + t.getMessage());
-            }
-        });
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            currentUser.reload();
-        }
     }
 
     private boolean selectedBottomMenu(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.navigation_pokedex)
-            navController.navigate(R.id.pokedexListFragment);
+        int selectedOptions = menuItem.getItemId();
 
-        else if (menuItem.getItemId() == R.id.navigation_pokemon)
-            navController.navigate(R.id.pokemonListFragment);
-
+        if (selectedOptions == R.id.navigation_captured)
+            navController.navigate(R.id.capturedFragment);
+        else if (selectedOptions == R.id.navigation_pokedex)
+            navController.navigate(R.id.pokedexFragment);
         else
             navController.navigate(R.id.settingsFragment);
 
         return true;
+    }
+
+    private void configureActionBar() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.blue_pokemon)));
+            getSupportActionBar().hide();
+        }
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+//        if (currentUser != null) {
+//            currentUser.reload();
+//        }
     }
 
     @Override
@@ -145,10 +114,9 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
-
     }
 
-    public void userClickedListPokemon(PokemonListName currentPokemon, View view) {
+    public void userClickedListPokemon(PokedexListName currentPokemon, View view) {
         // Se ha seleccionado un Pokemon de la lista cargada de la API.
         // Con este Pokemon, debemos hacer un segundo consumo de API indicando el Pokemon a cargar
         // Los datos cargados,

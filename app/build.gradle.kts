@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-
     id("com.google.gms.google-services")
 }
 
@@ -59,11 +58,14 @@ dependencies {
     implementation("androidx.compose.ui:ui-viewbinding:1.7.6")
 
     // NavigationController
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
+    implementation ("androidx.navigation:navigation-ui:2.7.7")
+    implementation ("androidx.navigation:navigation-fragment:2.7.7")
 
     // Gestion de las imagenes desde internet
     implementation("com.squareup.picasso:picasso:2.71828")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.7")
+    implementation("androidx.fragment:fragment:1.8.5")
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -11,23 +11,21 @@ import android.view.ViewGroup;
 import com.rodriguezruiz.pokedex.R;
 import com.rodriguezruiz.pokedex.data.PokedexListName;
 import com.rodriguezruiz.pokedex.databinding.FragmentCapturedBinding;
-import com.rodriguezruiz.pokedex.databinding.FragmentPokedexBinding;
-import com.rodriguezruiz.pokedex.databinding.FragmentSettingsBinding;
+import com.rodriguezruiz.pokedex.databinding.FragmentDetailPokemonBinding;
 
 import java.util.ArrayList;
 
-public class SettingsFragment extends Fragment {
+public class DetailPokemonFragment extends Fragment {
 
     private ArrayList<PokedexListName> listPokemon;
-    private FragmentSettingsBinding binding;
+    private FragmentDetailPokemonBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        binding = FragmentDetailPokemonBinding.inflate(inflater, container, false);
         return binding.getRoot();
-
     }
 
 }

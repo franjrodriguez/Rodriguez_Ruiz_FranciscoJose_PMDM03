@@ -26,4 +26,10 @@
     </style>
 
     <style name="Theme.Pokedex" parent="Base.Theme.Pokedex" />
+
+    <style name="BottomNavigation">
+        <item name="android:background">@color/red_pokemon</item>
+        <item name="itemIconTint">@color/blue_pokemon</item>
+        <item name="itemTextColor">@color/white</item>
+    </style>
 </resources>
