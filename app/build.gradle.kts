@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.gms.google-services")
+     id("com.google.gms.google-services")
 }
 
 android {
@@ -62,10 +62,7 @@ dependencies {
     implementation ("androidx.navigation:navigation-fragment:2.7.7")
 
     // Gestion de las imagenes desde internet
-    implementation("com.squareup.picasso:picasso:2.71828")
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.7")
-    implementation("androidx.fragment:fragment:1.8.5")
+    implementation("com.squareup.picasso:picasso:2.8")
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -1,4 +1,6 @@
-package com.rodriguezruiz.pokedex.models;
+package com.rodriguezruiz.pokedex.obsolete;
+
+import com.rodriguezruiz.pokedex.models.PokemonResponse;
 
 import java.util.ArrayList;
 

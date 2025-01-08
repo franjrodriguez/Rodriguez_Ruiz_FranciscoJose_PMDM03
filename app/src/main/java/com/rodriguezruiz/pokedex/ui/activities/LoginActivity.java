@@ -2,6 +2,7 @@ package com.rodriguezruiz.pokedex.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -23,18 +24,24 @@ import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG ="TAGFRAN";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
+        // *****
+        Log.i(TAG, "LoginActivity -> onStart");
+        // *****
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
+            // *****
+            Log.i(TAG, "LoginActivity -> Aparentemente ha ido y venido a Google y se ha logueado");
+            // *****
             gotoMainActivity();
         } else {
             startSignIn();
@@ -72,13 +79,16 @@ public class LoginActivity extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            // *****
+            Log.i(TAG, "LoginActivity -> onSignInResult -> Logueado yendo al MainActivity");
+            // *****
             gotoMainActivity();
 
         } else {
             // Sign in failed. If response is null the user canceled the
             // sign-in flow using the back button. Otherwise check
             // response
-            Toast.makeText(this, "Usuario o password no válido", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.invalid_user, Toast.LENGTH_SHORT).show();
             startSignIn();
         }
     }

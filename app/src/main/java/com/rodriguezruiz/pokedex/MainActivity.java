@@ -2,37 +2,21 @@ package com.rodriguezruiz.pokedex;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.rodriguezruiz.pokedex.api.PokedexApiService;
-import com.rodriguezruiz.pokedex.data.PokedexListName;
 import com.rodriguezruiz.pokedex.databinding.ActivityMainBinding;
-import com.rodriguezruiz.pokedex.models.PokedexResponse;
-import com.rodriguezruiz.pokedex.ui.fragment.CapturedFragment;
-import com.rodriguezruiz.pokedex.ui.fragment.PokedexFragment;
-import com.rodriguezruiz.pokedex.ui.fragment.SettingsFragment;
+import com.rodriguezruiz.pokedex.models.Pokemon;
 
-import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
         // Detalle del proceso:
         // 1.- Se inicia FirebaseAuth
         // 2.- Si es válido se continua, y en otro caso se avisa del error y se solicita nuevamente
-        // Iniciar la instancia FirebaseAuth;
-        //firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
@@ -86,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.pokedexFragment);
         else
             navController.navigate(R.id.settingsFragment);
-
         return true;
     }
 
@@ -99,10 +80,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            currentUser.reload();
-//        }
+
     }
 
     @Override
@@ -116,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void userClickedListPokemon(PokedexListName currentPokemon, View view) {
+    public void userClickedListPokemon(Pokemon currentPokemon, View view) {
         // Se ha seleccionado un Pokemon de la lista cargada de la API.
         // Con este Pokemon, debemos hacer un segundo consumo de API indicando el Pokemon a cargar
         // Los datos cargados,

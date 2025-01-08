@@ -10,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rodriguezruiz.pokedex.R;
-import com.rodriguezruiz.pokedex.data.PokedexListName;
+import com.rodriguezruiz.pokedex.models.Pokedex;
 import com.rodriguezruiz.pokedex.databinding.FragmentCapturedBinding;
-import com.rodriguezruiz.pokedex.databinding.FragmentPokedexBinding;
 
 import java.util.ArrayList;
 
@@ -24,7 +22,7 @@ import java.util.ArrayList;
  */
 public class CapturedFragment extends Fragment {
 
-    private ArrayList<PokedexListName> listPokemon;
+    private ArrayList<Pokedex> listPokemon;
     private FragmentCapturedBinding binding;
 
     @Override

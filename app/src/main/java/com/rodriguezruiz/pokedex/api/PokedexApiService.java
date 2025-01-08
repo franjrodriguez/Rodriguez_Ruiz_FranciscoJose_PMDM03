@@ -10,4 +10,5 @@ public interface PokedexApiService {
 
     @GET("pokemon")
     Call<PokedexResponse> getPokemonList(@Query("limit") int limit, @Query("offset") int offset);
+
 }

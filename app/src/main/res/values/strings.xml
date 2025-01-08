@@ -20,8 +20,17 @@
     <string name="pokedex_title">Pokedex</string>
     <string name="nombre_pokemon">Nombre Pokemon</string>
     <string name="index_pokemon">#1</string>
+    <string name="invalid_user">Usuario o password no válido</string>
+    <string name="preferences_diaglog_title">Configurar el idioma de la aplicación</string>
+    <string name="idioma">Idioma</string>
+    <string name="eliminar_pokemon_capturado">Eliminar Pokémon capturado</string>
+    <string name="eliminar_pokemon_summary">Activar o desactivar la eliminación de POkémon desde la pestaña Pokemon</string>
+    <string name="acerca_de">Acerca de</string>
+    <string name="informacion_about">Información sobre la aplicación</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="cerrar_sesion_summari">Pulsa para cerrar tu sesión actual</string>
 
-    <string-array name="language_options">
+    <string-array name="language_entries">
         <item>Castellano</item>
         <item>Inglés</item>
     </string-array>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Spinner para elegir idioma -->
+    <ListPreference
+        app:key="language_preference"
+        app:title="@string/idioma"
+        app:dialogTitle="@string/preferences_diaglog_title"
+        app:entries="@array/language_entries"
+        app:entryValues="@array/language_values"
+        app:defaultValue="es" />
+
+    <!-- Switch para permitir borrar Pokémon -->
+    <SwitchPreference
+        app:key="delete_pokemon_preferences"
+        app:title="@string/eliminar_pokemon_capturado"
+        app:summary="@string/eliminar_pokemon_summary"
+        app:defaultValue="false" />
+
+    <!-- Texto que lanza 'Acerca de' -->
+    <Preference
+        app:key="about_preference"
+        app:title="@string/acerca_de"
+        app:summary="@string/informacion_about" />
+
+    <!-- Botón para cerrar sesión -->
+    <Preference
+        app:key="logout_preference"
+        app:title="@string/cerrar_sesion"
+        app:summary="@string/cerrar_sesion_summari" />
+
+</androidx.preference.PreferenceScreen>
+

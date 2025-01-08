@@ -1,12 +1,12 @@
-package com.rodriguezruiz.pokedex.data;
+package com.rodriguezruiz.pokedex.models;
 
-public class PokedexListName {
+public class Pokedex {
 
     private String namePokemon;
     private int indexPokemon;
     private String imagePokemon;
 
-    public PokedexListName(String namePokemon, int indexPokemon, String imagePokemon) {
+    public Pokedex(String namePokemon, int indexPokemon, String imagePokemon) {
         this.namePokemon = namePokemon;
         this.indexPokemon = indexPokemon;
         this.imagePokemon = imagePokemon;

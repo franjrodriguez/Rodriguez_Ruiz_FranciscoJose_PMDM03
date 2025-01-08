@@ -4,21 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/capturedFragment">
+
     <fragment
         android:id="@+id/capturedFragment"
         android:name="com.rodriguezruiz.pokedex.ui.fragment.CapturedFragment"
         android:label="fragment_captured"
         tools:layout="@layout/fragment_captured" />
+
     <fragment
         android:id="@+id/pokedexFragment"
         android:name="com.rodriguezruiz.pokedex.ui.fragment.PokedexFragment"
         android:label="fragment_pokedex"
-        tools:layout="@layout/fragment_pokedex" />
+        tools:layout="@layout/fragment_pokedex">
+        <argument
+            android:name="pokedexList"
+            app:argType="com.rodriguezruiz.pokedex.models.Pokedex[]"
+            app:nullable="true" />
+    </fragment>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.rodriguezruiz.pokedex.ui.fragment.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <argument
+            android:name="pokemonCapturedList"
+            app:argType="com.rodriguezruiz.pokedex.models.PokemonCaptured[]"
+            app:nullable="true" />
+    </fragment>
+
     <fragment
         android:id="@+id/detailPokemonFragment"
         android:name="com.rodriguezruiz.pokedex.ui.fragment.DetailPokemonFragment"
