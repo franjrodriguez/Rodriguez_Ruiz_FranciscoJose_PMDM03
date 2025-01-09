@@ -1,10 +1,12 @@
 package com.rodriguezruiz.pokedex.ui.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +17,8 @@ import com.rodriguezruiz.pokedex.databinding.FragmentCapturedBinding;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CapturedFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CapturedFragment extends Fragment {
+    private final static String SETTING_DELETE = "delete_pokemon_preferences";
 
     private ArrayList<Pokedex> listPokemon;
     private FragmentCapturedBinding binding;
@@ -36,6 +34,10 @@ public class CapturedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Carga del SharedPreferences el estado del permiso para borrar Pokemon capturados
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean isEnabledDeletePokemon = sharedPreferences.getBoolean("delete_pokemon_preferences", false);
 
         // La lista de pokemon debe estar ya cargada en memoria.
 

@@ -8,7 +8,7 @@
     <string name="language_settings">Idioma</string>
     <string name="pokemon_deletion_settings">Borrar Pokemon</string>
     <string name="allow_pokemon_deletion">Permitir borrar Pokemon Capturado</string>
-    <string name="about_title">Acerca de</string>
+    <string name="about_title">Acerca de...</string>
     <string name="logout_title">Cerrar Sesión</string>
     <string name="copyright">Aplicación desarrollada por Fco. José Rodriguez Ruiz</string>
     <string name="version">Versión 1.0</string>
@@ -25,10 +25,15 @@
     <string name="idioma">Idioma</string>
     <string name="eliminar_pokemon_capturado">Eliminar Pokémon capturado</string>
     <string name="eliminar_pokemon_summary">Activar o desactivar la eliminación de POkémon desde la pestaña Pokemon</string>
-    <string name="acerca_de">Acerca de</string>
+    <string name="acerca_de">Acerca de...</string>
     <string name="informacion_about">Información sobre la aplicación</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_sesion_summari">Pulsa para cerrar tu sesión actual</string>
+    <string name="desarrollador_tu_nombre_versi_n_1_0_0">Desarrollador: Tu Nombre\nVersión: 1.0.0</string>
+    <string name="msg_about">Desarrollado por </string>
+    <string name="msg_developer">Fco. J. Rodríguez Ruiz</string>
+    <string name="msg_version">Versión </string>
+    <string name="sesion_finalizada">Sesión de usuario finalizada</string>
 
     <string-array name="language_entries">
         <item>Castellano</item>
