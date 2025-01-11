@@ -1,5 +1,7 @@
 package com.rodriguezruiz.pokedex.ui.activities;
 
+import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,15 +18,11 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.rodriguezruiz.pokedex.MainActivity;
 import com.rodriguezruiz.pokedex.R;
-
 import java.util.Arrays;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
-
-    private static final String TAG ="TAGFRAN";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,9 +36,12 @@ public class LoginActivity extends AppCompatActivity {
         Log.i(TAG, "LoginActivity -> onStart");
         // *****
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // *****
+        Log.i(TAG, "LoginActivity -> Debería haber devuelto user: " + user);
+
         if (user != null) {
             // *****
-            Log.i(TAG, "LoginActivity -> Aparentemente ha ido y venido a Google y se ha logueado");
+            Log.i(TAG, "LoginActivity -> Aparentemente ha ido y venido a Google y se ha logueado y ahora vamos a cargar Mainactivity");
             // *****
             gotoMainActivity();
         } else {

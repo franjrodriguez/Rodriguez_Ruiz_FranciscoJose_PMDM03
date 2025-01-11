@@ -40,4 +40,41 @@
         app:labelVisibilityMode="auto"
         style="@style/BottomNavigation"/>
 
+    <!-- Codigo relativo al ProgressBar -->
+    <FrameLayout
+        android:id="@+id/loadingIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#80000000">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center">
+
+                <ProgressBar
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:indeterminateTint="@color/blue_pokemon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/loading_pokedex"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

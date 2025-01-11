@@ -1,4 +1,4 @@
-package com.rodriguezruiz.pokedex.models;
+package com.rodriguezruiz.pokedex.data.model;
 
 public class Type {
     private String name;

@@ -29,11 +29,12 @@
     <string name="informacion_about">Información sobre la aplicación</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="cerrar_sesion_summari">Pulsa para cerrar tu sesión actual</string>
-    <string name="desarrollador_tu_nombre_versi_n_1_0_0">Desarrollador: Tu Nombre\nVersión: 1.0.0</string>
     <string name="msg_about">Desarrollado por </string>
     <string name="msg_developer">Fco. J. Rodríguez Ruiz</string>
     <string name="msg_version">Versión </string>
     <string name="sesion_finalizada">Sesión de usuario finalizada</string>
+    <string name="loading_pokedex">Cargando Pokédex...</string>
+    <string name="pokemon_image">Imagen Pokemon</string>
 
     <string-array name="language_entries">
         <item>Castellano</item>

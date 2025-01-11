@@ -1,9 +1,8 @@
-package com.rodriguezruiz.pokedex.viewmodel;
-
+package com.rodriguezruiz.pokedex.ui.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 import com.rodriguezruiz.pokedex.databinding.ItemPokemonBinding;
-import com.rodriguezruiz.pokedex.models.Pokemon;
+import com.rodriguezruiz.pokedex.data.model.PokedexData;
 import com.squareup.picasso.Picasso;
 
 public class PokedexViewHolder extends RecyclerView.ViewHolder {
@@ -15,11 +14,10 @@ public class PokedexViewHolder extends RecyclerView.ViewHolder {
         this.binding = binding;
     }
 
-    public void bind(Pokemon pokemonListName) {
+    public void bind(PokedexData pokemonListName) {
         binding.namePokemon.setText(pokemonListName.getName());
-        binding.indexPokemon.setText(pokemonListName.getId());
         Picasso.get()
-                .load(pokemonListName.getFront_default())
+                .load(pokemonListName.getUrl())
                 .into(binding.imagePokemon);
     }
 }

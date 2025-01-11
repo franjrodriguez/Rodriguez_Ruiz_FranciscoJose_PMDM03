@@ -12,15 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rodriguezruiz.pokedex.models.Pokedex;
 import com.rodriguezruiz.pokedex.databinding.FragmentCapturedBinding;
+import com.rodriguezruiz.pokedex.data.model.PokedexData;
 
 import java.util.ArrayList;
 
 public class CapturedFragment extends Fragment {
     private final static String SETTING_DELETE = "delete_pokemon_preferences";
 
-    private ArrayList<Pokedex> listPokemon;
+    private ArrayList<PokedexData> listPokemon;
     private FragmentCapturedBinding binding;
 
     @Override

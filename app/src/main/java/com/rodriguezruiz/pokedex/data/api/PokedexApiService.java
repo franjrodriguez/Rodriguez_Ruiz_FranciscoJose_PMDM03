@@ -1,6 +1,6 @@
-package com.rodriguezruiz.pokedex.api;
+package com.rodriguezruiz.pokedex.data.api;
 
-import com.rodriguezruiz.pokedex.models.PokedexResponse;
+import com.rodriguezruiz.pokedex.data.model.PokedexResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

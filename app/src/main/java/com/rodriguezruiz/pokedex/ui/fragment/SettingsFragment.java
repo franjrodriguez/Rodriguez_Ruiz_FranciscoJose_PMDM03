@@ -1,41 +1,37 @@
 package com.rodriguezruiz.pokedex.ui.fragment;
 
-import android.content.Context;
+import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_ABOUT;
+import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_DELETE;
+import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_LANGUAGE;
+import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_LOGOUT;
+
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.rodriguezruiz.pokedex.MainActivity;
+import com.rodriguezruiz.pokedex.ui.activities.MainActivity;
 import com.rodriguezruiz.pokedex.R;
 import com.rodriguezruiz.pokedex.databinding.FragmentSettingsBinding;
-
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String SETTING_ABOUT = "about_preference";
-    private static final String SETTING_LANGUAGE = "language_preference";
-    private static final String SETTING_DELETE = "delete_pokemon_preferences";
-    private static final String SETTING_LOGOUT = "logout_preference";
+
 
     private FragmentSettingsBinding binding;
     private SharedPreferences sharedPreferences;
-    private final Context context;
+  //  private final Context context;
 
-    public SettingsFragment(Context context) {
-        this.context = context;
+    public SettingsFragment() {
+        super();
     }
 
     @Override
@@ -62,14 +58,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         Preference logoutPreference = findPreference(SETTING_LOGOUT);
         if (logoutPreference != null) {
             logoutPreference.setOnPreferenceClickListener(preference -> {
-                logout();
+                MainActivity mainActivity = (MainActivity) requireActivity();
+                mainActivity.logout();
                 return true;
             });
         }
-    }
-
-    private void logout() {
-        ((MainActivity) context).logout();
     }
 
     private void setupAboutPreference() {

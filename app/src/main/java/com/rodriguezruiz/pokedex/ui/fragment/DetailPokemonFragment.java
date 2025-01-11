@@ -8,14 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.rodriguezruiz.pokedex.models.Pokedex;
 import com.rodriguezruiz.pokedex.databinding.FragmentDetailPokemonBinding;
+import com.rodriguezruiz.pokedex.data.model.PokedexData;
 
 import java.util.ArrayList;
 
 public class DetailPokemonFragment extends Fragment {
 
-    private ArrayList<Pokedex> listPokemon;
+    private ArrayList<PokedexData> listPokemon;
     private FragmentDetailPokemonBinding binding;
 
     @Override

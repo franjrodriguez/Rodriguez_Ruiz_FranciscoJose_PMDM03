@@ -56,6 +56,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.compose.ui:ui-viewbinding:1.7.6")
+    implementation("com.google.android.material:material:1.12.0")
 
     // NavigationController
     implementation ("androidx.navigation:navigation-ui:2.7.7")
