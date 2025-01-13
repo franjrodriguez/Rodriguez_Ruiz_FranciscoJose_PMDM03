@@ -5,10 +5,13 @@ import com.google.firebase.FirebaseApp;
 
 public class MyApplication extends Application {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    private static String userUID;
 
-        FirebaseApp.initializeApp(this);
+    public static void setUserUID(String uid) {
+        userUID = uid;
+    }
+
+    public static String getUserUID() {
+        return userUID;
     }
 }

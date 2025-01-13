@@ -35,6 +35,12 @@
     <string name="sesion_finalizada">Sesión de usuario finalizada</string>
     <string name="loading_pokedex">Cargando Pokédex...</string>
     <string name="pokemon_image">Imagen Pokemon</string>
+    <string name="welcome_message">Bienvenido al Mundo Pokemon</string>
+    <string name="app_logo">Mundo Pokemon</string>
+    <string name="login_description">Autentificación de usuario</string>
+    <string name="no_conection">Sin conexión a Internet</string>
+    <string name="any_captured">No tienes Pokemons capturados</string>
+    <string name="error">Error </string>
 
     <string-array name="language_entries">
         <item>Castellano</item>

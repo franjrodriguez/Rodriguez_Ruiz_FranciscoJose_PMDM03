@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema personalizado para LoginActivity -->
+    <style name="PokemonTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- Fondo inspirado en Pokémon -->
+        <item name="android:windowBackground">@drawable/background_pokemon</item>
+        <!-- Colores de la interfaz -->
+        <item name="colorPrimary">@color/pokemonRed</item>
+        <item name="colorPrimaryDark">@color/pokemonDarkRed</item>
+        <item name="colorAccent">@color/pokemonYellow</item>
+        <!-- Estilos de texto -->
+        <item name="android:textColor">@color/textWhite</item>
+        <item name="android:fontFamily">@font/pokemonsolid</item>
+    </style>
+
+</resources>

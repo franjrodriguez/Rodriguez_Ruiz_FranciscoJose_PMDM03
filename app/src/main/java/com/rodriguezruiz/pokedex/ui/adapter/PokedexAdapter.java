@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.ViewHolder> {
 
     private ArrayList<PokedexData> pokedex;
-
     public PokedexAdapter() {
         pokedex = new ArrayList<>();
     }
@@ -37,7 +36,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageView imageView;
+//        ImageView imageView;
         PokedexData pokemon = pokedex.get(position);
         holder.nombreTextView.setText(pokemon.getName());
         Picasso.get()

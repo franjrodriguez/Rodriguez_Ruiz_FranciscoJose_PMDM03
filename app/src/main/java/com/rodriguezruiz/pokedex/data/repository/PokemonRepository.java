@@ -2,7 +2,10 @@ package com.rodriguezruiz.pokedex.data.repository;
 
 import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
 import static com.rodriguezruiz.pokedex.utils.Constants.COLLECTION_NAME;
+import static com.rodriguezruiz.pokedex.utils.Constants.COLLECTION_USER;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rodriguezruiz.pokedex.listener.OperationCallBack;
@@ -19,22 +22,22 @@ public class PokemonRepository {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void addPokemon(PokemonData pokemon, OperationCallBack callBack) {
-        db.collection(COLLECTION_NAME).document(pokemon.getId())
+    public void addPokemon(String userUID, PokemonData pokemon, OperationCallBack callBack) {
+        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME).document(pokemon.getId())
                 .set(pokemon)
                 .addOnSuccessListener(aVoid -> callBack.onSuccess())
                 .addOnFailureListener(e -> callBack.onFailure(e));
     }
 
-    public void deletePokemon(String pokemonId, OperationCallBack callBack) {
-        db.collection(COLLECTION_NAME).document(pokemonId)
+    public void deletePokemon(String userUID, String pokemonId, OperationCallBack callBack) {
+        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME).document(pokemonId)
                 .delete()
                 .addOnSuccessListener(aVoid -> callBack.onSuccess())
                 .addOnFailureListener(e -> callBack.onFailure(e));
     }
 
-    public void getPokemon(String pokemonId, PokemonCallBack callBack) {
-        db.collection(COLLECTION_NAME).document(pokemonId)
+    public void getPokemon(String userUID, String pokemonId, PokemonCallBack callBack) {
+        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME).document(pokemonId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -47,8 +50,8 @@ public class PokemonRepository {
                 .addOnFailureListener(e -> callBack.onFailure(e));
     }
 
-    public void getAllPokemons(PokemonListCallback callBack) {
-        db.collection(COLLECTION_NAME)
+    public void getAllPokemons(String userUID, PokemonListCallback callBack) {
+        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     ArrayList<PokemonData> pokemonList = new ArrayList<>();
@@ -70,7 +73,4 @@ public class PokemonRepository {
                     callBack.onFailure(e);
                 });
     }
-
-
-
 }

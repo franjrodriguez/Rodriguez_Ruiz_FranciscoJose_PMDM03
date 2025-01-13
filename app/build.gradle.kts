@@ -41,9 +41,11 @@ dependencies {
     // Firebase BoM
     implementation (platform("com.google.firebase:firebase-bom:33.7.0"))
 
-    // Firebase Auth + Firestore
+    // Firebase Auth
     implementation ("com.google.firebase:firebase-auth")
     implementation ("com.firebaseui:firebase-ui-auth:8.0.2")
+
+    // Firestore
     implementation ("com.google.firebase:firebase-firestore")
 
     // Retrofit

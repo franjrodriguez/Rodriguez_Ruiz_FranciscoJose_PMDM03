@@ -4,6 +4,19 @@ public class PokedexData {
     private int id;
     private String name;
     private String url;
+    private boolean isCaptured;
+
+    public PokedexData() {
+        this.isCaptured = false;
+    }
+
+    public boolean isCaptured() {
+        return isCaptured;
+    }
+
+    public void setCaptured(boolean captured) {
+        isCaptured = captured;
+    }
 
     public String getName() {
         return name;

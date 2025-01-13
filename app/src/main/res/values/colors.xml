@@ -20,6 +20,10 @@
     <color name="info">#2196F3</color>
 
     <!-- Colores base -->
+    <color name="pokemonRed">#FF0000</color>
+    <color name="pokemonDarkRed">#8B0000</color>
+    <color name="pokemonYellow">#FFDE00</color>
+    <color name="textWhite">#FFFFFF</color>
     <color name="blue_pokemon">#0055A4</color>
     <color name="yellow_pokemon">#FFCB05</color>
     <color name="red_pokemon">#D62228</color>
@@ -35,4 +39,5 @@
     <color name="almost_white_gray">#F5F5F5</color>
     <color name="grey">#757575</color>
     <color name="background_nav">#D62228</color>
+    <color name="accent">#FFC107</color>
 </resources>

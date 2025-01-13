@@ -30,7 +30,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.rodriguezruiz.pokedex.R;
+import com.rodriguezruiz.pokedex.data.model.PokemonData;
 import com.rodriguezruiz.pokedex.data.repository.PokemonRepository;
+import com.rodriguezruiz.pokedex.listener.PokemonListCallback;
 import com.rodriguezruiz.pokedex.ui.adapter.PokedexAdapter;
 import com.rodriguezruiz.pokedex.data.api.GetApiPokedex;
 import com.rodriguezruiz.pokedex.databinding.ActivityMainBinding;
@@ -39,7 +41,6 @@ import com.rodriguezruiz.pokedex.listener.OnPokedexLoadedListener;
 import com.rodriguezruiz.pokedex.viewmodel.PokedexViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 import retrofit2.Retrofit;
 
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private PokedexAdapter listaPokemonAdapter;
     private PokedexViewModel pokedexViewModel;
     private PokemonRepository repository;
+    private String userUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +63,13 @@ public class MainActivity extends AppCompatActivity {
         // Inflar el binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        pokedexViewModel = new ViewModelProvider(this).get(PokedexViewModel.class);
-        repository = new PokemonRepository();
 
-        // *****
-        Log.i(TAG, "MainActivity -> onCreate");
+        // Recogemos el UID del usuario para acceder a sus Pokemons
+        userUID = MyApplication.getUserUID();
+
+        pokedexViewModel = new ViewModelProvider(this).get(PokedexViewModel.class);
+        repository = new PokemonRepository();        // Instanciamos PokemonRepository pasandole el UID del usuario
+
         // Inicializa la interfaz de usuario
         initializeUI();
 
@@ -111,14 +115,10 @@ public class MainActivity extends AppCompatActivity {
     private void loadPokedexFromApi() {
         if (!isNetworkAvailable()) {
             Log.e(TAG, "No hay conexión a Internet");
-            Toast.makeText(this, "No hay conexión a Internet", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.no_conection, Toast.LENGTH_LONG).show();
             hideLoadingIndicator();
             return;
         }
-        // *****
-        Log.i(TAG, "MainActivity -> Consumiendo la API con la Pokédex");
-        // 1. Obtiene la lista de los 150 primeros Pokemon
-
         GetApiPokedex getApiPokedex = new GetApiPokedex();
         getApiPokedex.gettingListPokedex(new OnPokedexLoadedListener() {
             @Override
@@ -142,8 +142,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadCapturedPokemonFromFirestore() {
+        if (!isNetworkAvailable()) {
+            Log.e(TAG, "No hay conexión a Internet");
+            Toast.makeText(this, R.string.no_conection, Toast.LENGTH_LONG).show();
+            hideLoadingIndicator();
+            return;
+        }
         // *****
-        Log.i(TAG, "MainActivity -> Cargando la lista de capturados desde Firestore");
+        Log.i(TAG, "MainActivity -> Leyendo los pokemoncapturados en Firestore");
+        readAllPokemon();
 
     }
 
@@ -203,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void userClickedListPokemon(PokedexData currentPokemon, View view) {
+    public void userClickedListPokemon(PokedexData pokemonToCapture, View view) {
         // Se ha seleccionado un Pokemon de la lista cargada de la API.
         // Con este Pokemon, debemos hacer un segundo consumo de API indicando el Pokemon a cargar
         // Los datos cargados,
@@ -225,69 +232,64 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.sesion_finalizada, Toast.LENGTH_SHORT).show();
     }
 
-    private void addPokemon() {
-        PokemonData newPokemon = new PokemonData(
-                binding.editTextId.getText().toString(),
-                binding.editTextName.getText().toString(),
-                Double.parseDouble(binding.editTextWeight.getText().toString()),
-                Double.parseDouble(binding.editTextHeight.getText().toString()),
-                binding.editTextUrlImage.getText().toString(),
-                Arrays.asList(binding.editTextTypes.getText().toString().split(",\\s*"))
-        );
-
-        repository.addPokemon(newPokemon, new OperationCallBack() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(MainActivity.this, "Pokemon Capturado", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void capturePokemon() {
+//        PokemonData newPokemon = new PokemonData(
+//                binding.editTextId.getText().toString(),
+//                binding.editTextName.getText().toString(),
+//                Double.parseDouble(binding.editTextWeight.getText().toString()),
+//                Double.parseDouble(binding.editTextHeight.getText().toString()),
+//                binding.editTextUrlImage.getText().toString(),
+//                Arrays.asList(binding.editTextTypes.getText().toString().split(",\\s*"))
+//        );
+//
+//        repository.addPokemon(newPokemon, new OperationCallBack() {
+//            @Override
+//            public void onSuccess() {
+//                Toast.makeText(MainActivity.this, "Pokemon Capturado", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onFailure(Exception e) {
+//                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     private void deletePokemon() {
-        String pokemonId = binding.editTextId.getText().toString();
-        repository.deletePokemon(pokemonId, new OperationCallBack() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(MainActivity.this, "Pokemon eliminado", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+//        String pokemonId = binding.editTextId.getText().toString();
+//        repository.deletePokemon(pokemonId, new OperationCallBack() {
+//            @Override
+//            public void onSuccess() {
+//                Toast.makeText(MainActivity.this, "Pokemon eliminado", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onFailure(Exception e) {
+//                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     private void readAllPokemon() {
-        repository.getAllPokemons(new PokemonListCallback() {
+        repository.getAllPokemons(userUID, new PokemonListCallback() {
             @Override
-            public void onSuccess(ArrayList<PokemonData> pokemons) {
-                Log.d(TAG + "=>MAIN_ACTIVITY", "Pokemons received: " + pokemons.size());
-
-                int numberCaptured = pokemons.size();
+            public void onSuccess(ArrayList<PokemonData> capturedListPokemons) {
+              //  Log.d(TAG + "=>MAIN_ACTIVITY", "Pokemons received: " + pokemons.size());
+                int numberCaptured = capturedListPokemons.size();
                 if (numberCaptured < 1) {
-                    Toast.makeText(MainActivity.this, "No tienes Pokemons capturados", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.any_captured, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Toast.makeText(MainActivity.this, "Tienes " + numberCaptured + " Pokemons capturados", Toast.LENGTH_SHORT).show();
-                // Tenemos un arraylist "pokemons" para ser enviado al adaptador del recyclerview de la activity ListarPokemon
-//                for (PokemonData namePokemon : pokemons) {
-//                    Log.i(TAG + "=>MAIN_ACTIVITY", namePokemon.getName());
-//                }
-                Intent intent = new Intent(MainActivity.this, ListPokemon.class);
-                intent.putExtra("arrayListPokemon", pokemons);
-                startActivity(intent);
+                //
             }
 
             @Override
             public void onFailure(Exception e) {
                 //Log.e(TAG + "=>MAIN_ACTIVITY", "Error getting pokemons: ", e);
-                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                String msg_error = R.string.error + e.getMessage();
+                Toast.makeText(MainActivity.this, msg_error, Toast.LENGTH_SHORT).show();
             }
         });
     }
