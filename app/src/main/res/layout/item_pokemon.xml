@@ -10,7 +10,7 @@
         android:layout_height="96dp"
         android:id="@+id/imagePokemon"
         android:contentDescription="Imagen pokemon"
-        android:background="@color/cardview_dark_background"
+        android:background="@color/cardview_light_background"
         android:layout_gravity="center_horizontal"/>
 
     <TextView

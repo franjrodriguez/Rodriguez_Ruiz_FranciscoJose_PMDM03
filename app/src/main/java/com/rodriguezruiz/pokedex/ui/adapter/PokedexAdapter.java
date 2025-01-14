@@ -4,6 +4,8 @@ import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
 import static com.rodriguezruiz.pokedex.utils.Constants.URL_SPRITE;
 import static com.rodriguezruiz.pokedex.utils.Constants.TYPE_SPRITE;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rodriguezruiz.pokedex.R;
 import com.rodriguezruiz.pokedex.data.model.PokedexData;
+import com.rodriguezruiz.pokedex.data.model.PokemonData;
+import com.rodriguezruiz.pokedex.ui.activities.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,8 +28,11 @@ import java.util.ArrayList;
 public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.ViewHolder> {
 
     private ArrayList<PokedexData> pokedex;
-    public PokedexAdapter() {
-        pokedex = new ArrayList<>();
+    private final Context context;
+
+    public PokedexAdapter(ArrayList<PokedexData> pokedex, Context context) {
+        this.pokedex = pokedex;
+        this.context = context;
     }
 
     @NonNull
@@ -36,14 +44,37 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        ImageView imageView;
-        PokedexData pokemon = pokedex.get(position);
-        holder.nombreTextView.setText(pokemon.getName());
+        PokedexData itemFromPokedexSelected = pokedex.get(position);
+        holder.nombreTextView.setText(itemFromPokedexSelected.getName());
+
+        // Cambiar el estilo si el Pokémon ha sido "capturado"
+        if (itemFromPokedexSelected.isCaptured()) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.selected_background));
+            holder.nombreTextView.setTypeface(holder.nombreTextView.getTypeface(), Typeface.ITALIC);
+        } else {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.default_background));
+            holder.nombreTextView.setTypeface(holder.nombreTextView.getTypeface(), Typeface.NORMAL);
+        }
+
         Picasso.get()
-                .load(URL_SPRITE + pokemon.getId() + TYPE_SPRITE)
+                .load(URL_SPRITE + itemFromPokedexSelected.getId() + TYPE_SPRITE)
                 .placeholder(R.drawable.pokemon_placeholder)
                 .error(R.drawable.noimage)
                 .into(holder.fotoImageView);
+
+        // Manejamos el evento click del usuario sobre un item
+        holder.itemView.setOnClickListener(view -> {
+            itemClicked(itemFromPokedexSelected, position);
+        });
+    }
+
+    private void itemClicked(PokedexData itemFromPokedexSelected, int position) {
+        if (!itemFromPokedexSelected.isCaptured()) {
+            itemFromPokedexSelected.setCaptured(true);
+            notifyItemChanged(position);
+        }
+        // Llama a la funcion que se encarga en MainActivity
+        ((MainActivity) context).userClickedListPokemon(itemFromPokedexSelected);
     }
 
     @Override

@@ -11,7 +11,7 @@
         android:background="@color/blue_pokemon"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:title="Pokédex"
-        app:titleTextColor="@color/white"
+        app:titleTextColor="@android:color/white"
         android:elevation="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

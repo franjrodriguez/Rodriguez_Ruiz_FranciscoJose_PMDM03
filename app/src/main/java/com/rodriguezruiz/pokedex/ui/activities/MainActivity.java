@@ -14,8 +14,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +30,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.rodriguezruiz.pokedex.R;
 import com.rodriguezruiz.pokedex.data.model.PokemonData;
 import com.rodriguezruiz.pokedex.data.repository.PokemonRepository;
+import com.rodriguezruiz.pokedex.listener.OnPokemonLoadedListener;
+import com.rodriguezruiz.pokedex.listener.OperationCallBack;
+import com.rodriguezruiz.pokedex.listener.PokemonCallBack;
 import com.rodriguezruiz.pokedex.listener.PokemonListCallback;
 import com.rodriguezruiz.pokedex.ui.adapter.PokedexAdapter;
 import com.rodriguezruiz.pokedex.data.api.GetApiPokedex;
@@ -39,6 +40,7 @@ import com.rodriguezruiz.pokedex.databinding.ActivityMainBinding;
 import com.rodriguezruiz.pokedex.data.model.PokedexData;
 import com.rodriguezruiz.pokedex.listener.OnPokedexLoadedListener;
 import com.rodriguezruiz.pokedex.viewmodel.PokedexViewModel;
+import com.rodriguezruiz.pokedex.viewmodel.PokemonViewModel;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -54,8 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PokedexAdapter listaPokemonAdapter;
     private PokedexViewModel pokedexViewModel;
+    private PokemonViewModel pokemonViewModel;
     private PokemonRepository repository;
     private String userUID;
+    private ArrayList<PokemonData> listPokemon;
+    private ArrayList<PokedexData> listPokedex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,52 +78,44 @@ public class MainActivity extends AppCompatActivity {
         // Inicializa la interfaz de usuario
         initializeUI();
 
-        // Muestra un indicador de carga
-        showLoadingIndicator();
+        // Muestra un indicador de espera
+
 
         // Cargar los datos desde Firestore y la API de forma asincrona
         loadCapturedPokemonFromFirestore();
         loadPokedexFromApi();
+        
+        // Compara la lista de Pokemon Capturados y busca su Homologo en Pokedex para desactivarlo y actualizarlo
+        // como capturado
+        updatePokedexWithCapturedPokemons();
 
-        hideLoadingIndicator();
+        // Oculta el indicador de espera
+
     }
 
-    private void showLoadingIndicator() {
-        // *****
-        Log.i(TAG, "MainActivity -> Mostrando el indicador de carga");
-        // Obtener referencia al indicador de carga
-        View loadingIndicator = binding.loadingIndicator;
+    public void updatePokedexWithCapturedPokemons() {
+        ArrayList<PokemonData> capturedPokemons = pokemonViewModel.getPokemonData().getValue();
+        ArrayList<PokedexData> pokedesList = pokedexViewModel.getPokedexData().getValue();
 
-        // Mostrar el indicador
-        loadingIndicator.setVisibility(View.VISIBLE);
-
-        // Deshabilitar interacciones mientras se carga
-        getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        );
+        if (capturedPokemons != null && pokedesList != null) {
+            for (PokemonData captured : capturedPokemons) {
+                for (PokedexData pokedex : pokedesList) {
+                    if (captured.getId().equals(pokedex.getId())) {
+                        pokedex.setCaptured(true);
+                        break; // Corto el bucle interno para que pase al siguiente capturado
+                    }
+                }
+            }
+            listaPokemonAdapter.notifyDataSetChanged();
+        }
     }
 
-    private void hideLoadingIndicator() {
-        Log.i(TAG, "MainActivity -> Ocultando el indicador de carga");
-
-        // Obtener referencia al indicador de carga
-        View loadingIndicator = binding.loadingIndicator;
-
-        // Ocultar el indicador
-        loadingIndicator.setVisibility(View.GONE);
-
-        // Rehabilitar interacciones
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-    }
-
-    private void loadPokedexFromApi() {
+    public void loadPokedexFromApi() {
         if (!isNetworkAvailable()) {
-            Log.e(TAG, "No hay conexión a Internet");
             Toast.makeText(this, R.string.no_conection, Toast.LENGTH_LONG).show();
-            hideLoadingIndicator();
             return;
         }
+
         GetApiPokedex getApiPokedex = new GetApiPokedex();
         getApiPokedex.gettingListPokedex(new OnPokedexLoadedListener() {
             @Override
@@ -126,45 +123,57 @@ public class MainActivity extends AppCompatActivity {
                 if (pokedex != null && !pokedex.isEmpty()) {
                     Log.d(TAG, "loadPokedexFromApi -> Datos leido correctamente: " + pokedex.size() + " Pokemon");
                     // Los datos devueltos por la API se agregan al adaptador
-                    pokedexViewModel.setPokedexData(pokedex);           // Almacena los datos consumidos en el ViewModel
+                    pokedexViewModel.setPokedexData(pokedex);        // Almacena los datos consumidos en el ViewModel
                 } else {
                     Log.e(TAG, "La lista de Pokemon está vacía o es null");
                 }
-                hideLoadingIndicator();
             }
         });
     }
 
-    private boolean isNetworkAvailable() {
+    public void loadPokemonFromApi(String namePokemon, PokemonCallBack callback) {
+        if (!isNetworkAvailable()) {
+            Log.e(TAG, "No hay conexión a Internet");
+            return;
+        }
+
+        GetApiPokedex getApiPokedex = new GetApiPokedex();
+        getApiPokedex.gettingPokemonDetail(namePokemon, new OnPokemonLoadedListener() {
+            @Override
+            public void onLoaded(PokemonData pokemonData) {
+                if (pokemonData != null) {
+                    Log.d(TAG, "loadPokemonFromApi -> Datos obtenidos correctamente: " + pokemonData.getName());
+                    callback.onSuccess(pokemonData);  // Llama al callback con el resultado
+                } else {
+                    Log.e(TAG, "loadPokemonFromApi -> No se encontraron datos para: " + namePokemon);
+                    callback.onSuccess(null);  // Devuelve null si no hay datos
+                }
+            }
+        });
+    }
+
+    public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private void loadCapturedPokemonFromFirestore() {
+    public void loadCapturedPokemonFromFirestore() {
         if (!isNetworkAvailable()) {
             Log.e(TAG, "No hay conexión a Internet");
             Toast.makeText(this, R.string.no_conection, Toast.LENGTH_LONG).show();
-            hideLoadingIndicator();
             return;
         }
         // *****
         Log.i(TAG, "MainActivity -> Leyendo los pokemoncapturados en Firestore");
         readAllPokemon();
-
     }
 
-    private void initializeUI() {
-        // *****
-        Log.i(TAG, "MainActivity -> Inicializar la UI");
-
+    public void initializeUI() {
         // Cargar el lenguaje almacenado en la SharedPreferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String languageCode = preferences.getString(LANGUAGE, LANGUAGE_DEFAULT);
         setLocale(languageCode);
-        // ******
-        Log.i(TAG, "MainActivity -> Acabo de preparar la app con el idioma");
-
         // Establece contenido de la toolbar
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
@@ -210,13 +219,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void userClickedListPokemon(PokedexData pokemonToCapture, View view) {
-        // Se ha seleccionado un Pokemon de la lista cargada de la API.
-        // Con este Pokemon, debemos hacer un segundo consumo de API indicando el Pokemon a cargar
-        // Los datos cargados,
+    public void userClickedListPokemon(PokedexData pokemonToCapture) {
+        // Actualiza el estado tambien en el array del ViewModel
+        ArrayList<PokedexData> pokedexDataList = pokedexViewModel.getPokedexData().getValue();
+        if (pokedexDataList != null) {
+            for (PokedexData data : pokedexDataList) {
+                if (data.getId() == pokemonToCapture.getId()) {
+                    data.setCaptured(true);
+                    break;
+                }
+            }
+            pokedexViewModel.setPokedexData(pokedexDataList);
+        }
+        // Obtiene el nombre para consumir la API y cargar en una clase PokemonData los datos del pokemon seleccionado
+        String namePokemonToCapturate = pokemonToCapture.getName();
+        loadPokemonFromApi(namePokemonToCapturate, new PokemonCallBack() {
+            @Override
+            public void onSuccess(PokemonData pokemon) {
+                // Se almacena en la base de datos
+                addPokemon(pokemon);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, "Problemas al consumir pokemon");
+            }
+        });
     }
 
-    private void setLocale(String languageCode) {
+    public void setLocale(String languageCode) {
         Locale locale = new Locale(languageCode);
         Locale.setDefault(locale);
         Configuration configuration = new Configuration();
@@ -232,46 +263,38 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.sesion_finalizada, Toast.LENGTH_SHORT).show();
     }
 
-    private void capturePokemon() {
-//        PokemonData newPokemon = new PokemonData(
-//                binding.editTextId.getText().toString(),
-//                binding.editTextName.getText().toString(),
-//                Double.parseDouble(binding.editTextWeight.getText().toString()),
-//                Double.parseDouble(binding.editTextHeight.getText().toString()),
-//                binding.editTextUrlImage.getText().toString(),
-//                Arrays.asList(binding.editTextTypes.getText().toString().split(",\\s*"))
-//        );
-//
-//        repository.addPokemon(newPokemon, new OperationCallBack() {
-//            @Override
-//            public void onSuccess() {
-//                Toast.makeText(MainActivity.this, "Pokemon Capturado", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+    private void addPokemon(PokemonData newPokemon) {
+        repository.addPokemon(userUID, newPokemon, new OperationCallBack() {
+            @Override
+            public void onSuccess() {
+                // Se añadió bien a la BD -> SE añade al ViewModel y RecyclerView)
+                pokemonViewModel.getPokemonData().getValue().add(newPokemon);
+                pokemonViewModel.setPokemonData(pokemonViewModel.getPokemonData().getValue()); // Notifica el cambio
+                Toast.makeText(MainActivity.this, R.string.captured_pokemons, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void deletePokemon() {
+    public void deletePokemon(String pokemonId) {
+        repository.deletePokemon(userUID, pokemonId, new OperationCallBack() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(MainActivity.this, R.string.msgDeleted, Toast.LENGTH_SHORT).show();
+            }
 
-//        String pokemonId = binding.editTextId.getText().toString();
-//        repository.deletePokemon(pokemonId, new OperationCallBack() {
-//            @Override
-//            public void onSuccess() {
-//                Toast.makeText(MainActivity.this, "Pokemon eliminado", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(MainActivity.this, R.string.error + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void readAllPokemon() {
+    public void readAllPokemon() {
         repository.getAllPokemons(userUID, new PokemonListCallback() {
             @Override
             public void onSuccess(ArrayList<PokemonData> capturedListPokemons) {
@@ -281,8 +304,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, R.string.any_captured, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(MainActivity.this, "Tienes " + numberCaptured + " Pokemons capturados", Toast.LENGTH_SHORT).show();
-                //
+                String msg = "" + R.string.have + numberCaptured + R.string.captured_pokemons;
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override

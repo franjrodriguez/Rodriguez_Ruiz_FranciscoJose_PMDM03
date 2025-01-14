@@ -21,14 +21,14 @@
     <!-- Texto que lanza 'Acerca de' -->
     <Preference
         app:key="about_preference"
-        app:title="@string/acerca_de"
+        app:title="@string/about"
         app:summary="@string/informacion_about" />
 
     <!-- Botón para cerrar sesión -->
     <Preference
         app:key="logout_preference"
         app:title="@string/cerrar_sesion"
-        app:summary="@string/cerrar_sesion_summari" />
+        app:summary="@string/cerrar_sesion_summary" />
 
 </androidx.preference.PreferenceScreen>
 

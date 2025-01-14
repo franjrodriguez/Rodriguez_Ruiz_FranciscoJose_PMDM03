@@ -17,6 +17,8 @@ import com.rodriguezruiz.pokedex.ui.adapter.PokedexAdapter;
 import com.rodriguezruiz.pokedex.databinding.FragmentPokedexBinding;
 import com.rodriguezruiz.pokedex.viewmodel.PokedexViewModel;
 
+import java.util.ArrayList;
+
 public class PokedexFragment extends Fragment {
 
     private static RecyclerView recyclerView;
@@ -41,13 +43,16 @@ public class PokedexFragment extends Fragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new PokedexAdapter();
+        // Inicializa el adaptador primero
+        adapter = new PokedexAdapter(new ArrayList<>(), getActivity());
         recyclerView.setAdapter(adapter);
 
-        // Almacena la lista cargada en el ViewModel
+        // Vincular el ViewModel y observar los cambios
         pokedexViewModel = new ViewModelProvider(requireActivity()).get(PokedexViewModel.class);
         pokedexViewModel.getPokedexData().observe(getViewLifecycleOwner(), pokedex -> {
-            adapter.updateList(pokedex);  // Implementar en el adaptador
+            if (pokedex != null) {
+                adapter.updateList(pokedex);  // Implementar en el adaptador
+            }
         });
     }
 }

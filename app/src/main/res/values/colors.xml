@@ -20,24 +20,23 @@
     <color name="info">#2196F3</color>
 
     <!-- Colores base -->
+    <color name="white">#FDFEFE</color>
+    <color name="textWhite">#FDFEFE</color>
     <color name="pokemonRed">#FF0000</color>
     <color name="pokemonDarkRed">#8B0000</color>
     <color name="pokemonYellow">#FFDE00</color>
-    <color name="textWhite">#FFFFFF</color>
+    <color name="textColorWhite">#FFFFFF</color>
     <color name="blue_pokemon">#0055A4</color>
     <color name="yellow_pokemon">#FFCB05</color>
     <color name="red_pokemon">#D62228</color>
-    <color name="white">#FFFFFF</color>
     <color name="gray">#888888</color>
-    <color name="black">#FF000000</color>
-    <color name="red">#FF0000</color>
-    <color name="yellow">#FFCC00</color>
-    <color name="blue">#3B4CCA</color>
-    <color name="colorLogout">#F44336</color>
+    <color name="black">#000000</color>
     <color name="light_gray">#D3D3D3</color>
     <color name="softer_gray">#E0E0E0</color>
     <color name="almost_white_gray">#F5F5F5</color>
     <color name="grey">#757575</color>
     <color name="background_nav">#D62228</color>
     <color name="accent">#FFC107</color>
+    <color name="default_background">#FFFFFF</color>
+    <color name="selected_background">#888888</color>
 </resources>

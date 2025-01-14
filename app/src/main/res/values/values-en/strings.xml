@@ -1,40 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- SharedPreferences -->
+    <string name="idioma">Language</string>
+    <string name="preferences_diaglog_title">Change language (Spanish/English)</string>
+    <string name="eliminar_pokemon_capturado">Delete captured Pokémon</string>
+    <string name="eliminar_pokemon_summary">Enable or disable the deletion of Pokémon from the Pokémon tab</string>
+    <string name="informacion_about">Information about the application</string>
+    <string name="sesion_finalizada">User  session ended</string>
+    <string name="preferences_dialog_title">Set the application language</string>
+    <string name="about">About the application</string>
+    <string name="cerrar_sesion">Log out</string>
+    <string name="cerrar_sesion_summary">Disconnect from the online database</string>
+
     <string name="app_name">Pokedex</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_pokedex">Pokedex</string>
     <string name="menu_captured">Captured</string>
     <string name="menu_settings">Settings</string>
-    <string name="imagen_del_personaje">Pokemon image</string>
+    <string name="imagen_del_personaje">Pokémon image</string>
     <string name="language_settings">Language</string>
-    <string name="pokemon_deletion_settings">Delete Pokemon</string>
-    <string name="allow_pokemon_deletion">Allow deleting Captured Pokemon</string>
-    <string name="about_title">About...</string>
+    <string name="pokemon_deletion_settings">Delete Pokémon</string>
+    <string name="allow_pokemon_deletion">Allow deletion of captured Pokémon</string>
+    <string name="about_title">About…</string>
     <string name="logout_title">Log Out</string>
-    <string name="copyright">Application developed by Fco. José Rodriguez Ruiz</string>
+    <string name="copyright">Application developed by Fco. José Rodríguez Ruiz</string>
     <string name="version">Version 1.0</string>
-    <string name="about">About the application</string>
-    <string name="ok_button">Accept</string>
-    <string name="logout_message">Session has been closed</string>
+    <string name="ok_button">OK</string>
+    <string name="logout_message">The session has been closed</string>
     <string name="configuration">Configuration</string>
-    <string name="detailtitle">Pokemon Details</string>
+    <string name="detailtitle">Pokémon Details</string>
     <string name="pokedex_title">Pokedex</string>
-    <string name="nombre_pokemon">Pokemon Name</string>
+    <string name="nombre_pokemon">Pokémon Name</string>
     <string name="index_pokemon">#1</string>
     <string name="invalid_user">Invalid username or password</string>
-    <string name="preferences_diaglog_title">Configure application language</string>
-    <string name="idioma">Language</string>
-    <string name="eliminar_pokemon_capturado">Delete captured Pokemon</string>
-    <string name="eliminar_pokemon_summary">Enable or disable Pokemon deletion from the Pokemon tab</string>
-    <string name="acerca_de">About...</string>
-    <string name="informacion_about">Application information</string>
-    <string name="cerrar_sesion">Log out</string>
-    <string name="cerrar_sesion_summari">Press to close your current session</string>
-    <string name="desarrollador_tu_nombre_versi_n_1_0_0">Developer: Your Name\nVersion: 1.0.0</string>
-    <string name="msg_about">Developed by </string>
-    <string name="msg_developer">Fco. J. Rodríguez Ruiz</string>
-    <string name="msg_version">Version </string>
-    <string name="sesion_finalizada">User session ended</string>
+    <string name="loading_pokedex">Loading Pokédex…</string>
+    <string name="pokemon_image">Pokémon Image</string>
+    <string name="welcome_message">Welcome to the Pokémon World</string>
+    <string name="app_logo">Pokémon World</string>
+    <string name="login_description">User  authentication</string>
+    <string name="no_conection">No Internet connection</string>
+    <string name="any_captured">You have no captured Pokémon</string>
+    <string name="error">Error</string>
+    <string name="captured_pokemons">Captured Pokémon</string>
+    <string name="have">You have</string>
+    <string name="msgErrorLoadPokemon">There was some kind of problem loading the Pokémon</string>
+    <string name="msgCapturedPokemon">You have captured</string>
+    <string name="msgDeleted">Pokémon deleted</string>
+    <string name="msg_without_internet">No Internet connection</string>
 
     <string-array name="language_entries">
         <item>Spanish</item>

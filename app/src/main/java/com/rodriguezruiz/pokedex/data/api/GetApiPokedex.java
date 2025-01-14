@@ -9,7 +9,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import com.rodriguezruiz.pokedex.data.model.PokedexData;
 import com.rodriguezruiz.pokedex.data.model.PokedexResponse;
+import com.rodriguezruiz.pokedex.data.model.PokemonData;
 import com.rodriguezruiz.pokedex.listener.OnPokedexLoadedListener;
+import com.rodriguezruiz.pokedex.listener.OnPokemonLoadedListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,9 +25,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GetApiPokedex {
 
     private PokedexResponse pokedexResponse = new PokedexResponse();
+
     public void gettingListPokedex(OnPokedexLoadedListener listener) {
         Log.d(TAG, "GetApiPokedex -> Iniciando configuración de Retrofit");
-
         try {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(URL_API)
@@ -79,43 +81,40 @@ public class GetApiPokedex {
             e.printStackTrace();
         }
     }
-//    public void gettingListPokedex(OnPokedexLoadedListener listener) {
-//        Log.d(TAG, "GetApiPokedex -> Iniciando petición a la API");
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(URL_API)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//        PokedexApiService service = retrofit.create(PokedexApiService.class);
-//        Call<PokedexResponse> pokedexResponseCall = service.getPokemonList(LIMIT, OFFSET);
-//
-//        pokedexResponseCall.enqueue(new Callback<PokedexResponse>() {
-//            @Override
-//            public void onResponse(@NonNull Call<PokedexResponse> call, @NonNull Response<PokedexResponse> response) {
-//                if (response.isSuccessful()) {
-//                    Log.e(TAG, "onResponse -> Respuesta exitosa de la API");
-//
-//                    PokedexResponse pokedexResponse = response.body();
-//                    if (pokedexResponse != null) {
-//                        ArrayList<PokedexData> listaPokedex = pokedexResponse.getResults();
-//                        Log.d(TAG, "Número de Pokemon recibidos: " + listaPokedex.size());
-//                        listener.onLoaded(listaPokedex);
-//                    } else {
-//                        Log.e(TAG, "El cuerpo de la respuesta es null");
-//                    }
-//
-//                } else {
-//                    Log.e(TAG, "Error en la respuesta: " + response.code());
-//                    Log.e(TAG, "Error body: " + response.errorBody());                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<PokedexResponse> call, Throwable t) {
-//                Log.e(TAG, " onFailure -> Error en la peticion : " + t.getMessage());
-//                t.printStackTrace();
-//            }
-//        });
-//    }
 
+    public void gettingPokemonDetail(String pokemonName, OnPokemonLoadedListener listener) {
+        Log.d(TAG, "GetApiPokedex -> Iniciando petición a la API");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL_API)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PokedexApiService service = retrofit.create(PokedexApiService.class);
+        Call<PokemonData> pokemonDataCall = service.getPokemonDetails(pokemonName);
+
+        pokemonDataCall.enqueue(new Callback<PokemonData>(){
+            @Override
+            public void onResponse(@NonNull Call<PokemonData> call, @NonNull Response<PokemonData> response) {
+                if (response.isSuccessful()) {
+                    Log.e(TAG, "onResponse -> Respuesta exitosa de la API");
+
+                    PokemonData pokemonData = response.body();
+                    if (pokemonData != null) {
+                        listener.onLoaded(pokemonData);
+                    } else {
+                        Log.e(TAG, "El cuerpo de la respuesta es null");
+                    }
+
+                } else {
+                    Log.e(TAG, "Error en la respuesta: " + response.code());
+                    Log.e(TAG, "Error body: " + response.errorBody());                }
+            }
+
+            @Override
+            public void onFailure(Call<PokemonData> call, Throwable t) {
+                Log.e(TAG, " onFailure -> Error en la peticion : " + t.getMessage());
+                t.printStackTrace();
+            }
+        });
+    }
 }

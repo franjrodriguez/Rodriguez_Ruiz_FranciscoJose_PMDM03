@@ -6,6 +6,6 @@ import java.util.ArrayList;
 
 public class OnPokedexLoadedListener {
     public void onLoaded(ArrayList<PokedexData> listPokedex) {
-    }
 
+    }
 }
