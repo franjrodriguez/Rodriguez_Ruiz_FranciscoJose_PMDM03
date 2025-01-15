@@ -1,10 +1,9 @@
 package com.rodriguezruiz.pokedex.data.repository;
 
+import static com.rodriguezruiz.pokedex.utils.Constants.COLLECTION_CAPTURED;
+import static com.rodriguezruiz.pokedex.utils.Constants.COLLECTION_TRAINERS;
 import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
-import static com.rodriguezruiz.pokedex.utils.Constants.COLLECTION_NAME;
-import static com.rodriguezruiz.pokedex.utils.Constants.COLLECTION_USER;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,22 +21,67 @@ public class PokemonRepository {
         db = FirebaseFirestore.getInstance();
     }
 
+    public void addPokemonWithTrainerValidation(String userUID, PokemonData pokemon, OperationCallBack callback) {
+        Log.i(TAG, "PokemonRepository (addPokemonWithTrainerValidation) -> Verificando trainer: " + userUID);
+
+        // Primero verificamos si existe el entrenador
+        db.collection(COLLECTION_TRAINERS)
+                .document(userUID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Si existe el entrenador, procedemos a añadir el Pokémon
+                            addPokemonToTrainer(userUID, pokemon, callback);
+                        } else {
+                            // El entrenador no existe
+                            callback.onFailure(new Exception("El entrenador no existe"));
+                        }
+                    } else {
+                        // Error al verificar el entrenador
+                        callback.onFailure(task.getException());
+                    }
+                });
+    }
+
+    private void addPokemonToTrainer(String userUID, PokemonData pokemon, OperationCallBack callback) {
+        Log.i(TAG, "PokemonRepository (addPokemonToTrainer) -> Añadiendo pokemon: " + pokemon.toString());
+
+        db.collection(COLLECTION_TRAINERS)
+                .document(userUID)
+                .collection(COLLECTION_CAPTURED)
+                .document(pokemon.getId())
+                .set(pokemon)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Pokemon añadido correctamente");
+                    callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error al añadir pokemon", e);
+                    callback.onFailure(e);
+                });
+        }
+
     public void addPokemon(String userUID, PokemonData pokemon, OperationCallBack callBack) {
-        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME).document(pokemon.getId())
+        Log.i(TAG, "PokemonRepository (addPokemon) -> userUID: " + userUID + " pokemon: " + pokemon.toString());
+        db.collection(COLLECTION_TRAINERS).document(userUID).collection(COLLECTION_CAPTURED).document(pokemon.getId())
                 .set(pokemon)
                 .addOnSuccessListener(aVoid -> callBack.onSuccess())
                 .addOnFailureListener(e -> callBack.onFailure(e));
     }
 
     public void deletePokemon(String userUID, String pokemonId, OperationCallBack callBack) {
-        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME).document(pokemonId)
+        Log.i(TAG, "PokemonRepository (deletePokemon) -> userUID: " + userUID + " pokemon: " + pokemonId.toString());
+        db.collection(COLLECTION_TRAINERS).document(userUID).collection(COLLECTION_CAPTURED).document(pokemonId)
                 .delete()
                 .addOnSuccessListener(aVoid -> callBack.onSuccess())
                 .addOnFailureListener(e -> callBack.onFailure(e));
     }
 
     public void getPokemon(String userUID, String pokemonId, PokemonCallBack callBack) {
-        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME).document(pokemonId)
+        Log.i(TAG, "PokemonRepository (getPokemon) -> userUID: " + userUID + " pokemonID: " + pokemonId.toString());
+        db.collection(COLLECTION_TRAINERS).document(userUID).collection(COLLECTION_CAPTURED).document(pokemonId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -51,7 +95,7 @@ public class PokemonRepository {
     }
 
     public void getAllPokemons(String userUID, PokemonListCallback callBack) {
-        db.collection(COLLECTION_USER).document(userUID).collection(COLLECTION_NAME)
+        db.collection(COLLECTION_TRAINERS).document(userUID).collection(COLLECTION_CAPTURED)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     ArrayList<PokemonData> pokemonList = new ArrayList<>();

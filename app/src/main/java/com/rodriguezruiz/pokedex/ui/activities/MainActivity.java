@@ -4,6 +4,7 @@ import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
 import static com.rodriguezruiz.pokedex.utils.Constants.LANGUAGE;
 import static com.rodriguezruiz.pokedex.utils.Constants.LANGUAGE_DEFAULT;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,24 +56,28 @@ public class MainActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private RecyclerView recyclerView;
     private PokedexAdapter listaPokemonAdapter;
-    private PokedexViewModel pokedexViewModel;
-    private PokemonViewModel pokemonViewModel;
     private PokemonRepository repository;
     private String userUID;
     private ArrayList<PokemonData> listPokemon;
     private ArrayList<PokedexData> listPokedex;
-
+    private PokedexViewModel pokedexViewModel;
+    private PokemonViewModel pokemonViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Inflar el binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Inicializa el ViewMOdel
+        pokemonViewModel = new ViewModelProvider(this).get(PokemonViewModel.class);
+        pokedexViewModel = new ViewModelProvider(this).get(PokedexViewModel.class);
+
         // Recogemos el UID del usuario para acceder a sus Pokemons
         userUID = MyApplication.getUserUID();
+        Log.i(TAG, "MainActivity -> userUID: " + userUID);
 
-        pokedexViewModel = new ViewModelProvider(this).get(PokedexViewModel.class);
         repository = new PokemonRepository();        // Instanciamos PokemonRepository pasandole el UID del usuario
 
         // Inicializa la interfaz de usuario
@@ -174,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String languageCode = preferences.getString(LANGUAGE, LANGUAGE_DEFAULT);
         setLocale(languageCode);
+
         // Establece contenido de la toolbar
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
@@ -184,20 +190,26 @@ public class MainActivity extends AppCompatActivity {
             navController = NavHostFragment.findNavController(navHostFragment);
             NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
             NavigationUI.setupActionBarWithNavController(this, navController);
+        } else {
+            Log.e(TAG, "NavHostFragment no encontrado");
         }
         binding.bottomNavigation.setOnItemSelectedListener(this::selectedBottomMenu);
         configureActionBar();
     }
 
+    @SuppressLint("NonConstantResourceId")
     private boolean selectedBottomMenu(MenuItem menuItem) {
         int selectedOptions = menuItem.getItemId();
 
-        if (selectedOptions == R.id.navigation_captured)
+        if (selectedOptions == R.id.navigation_captured) {
             navController.navigate(R.id.capturedFragment);
-        else if (selectedOptions == R.id.navigation_pokedex)
+        } else if (selectedOptions == R.id.navigation_pokedex) {
             navController.navigate(R.id.pokedexFragment);
-        else
+        } else if (selectedOptions == R.id.navigation_settings) {
             navController.navigate(R.id.settingsFragment);
+        } else {
+            return false; // Si no se maneja, devuelve false
+        }
         return true;
     }
 

@@ -1,7 +1,9 @@
 package com.rodriguezruiz.pokedex.ui.activities;
 
+import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -23,22 +25,25 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             // El usuario se ha autenticado, se ha conseguido la UID y redirige el proceso a MainActivity
+            Log.i(TAG, "LoginActivity -> Usuario logueado");
+
             MyApplication.setUserUID(currentUser.getUid());
             goToMainActivity();
         } else {
             // Usuario no autenticado, se inicia FirebaseUI
+            Log.i(TAG, "LoginActivity -> El usuario NO estaba logueado. Comienza a solicitar user-pwd");
             startFirebaseUI();
         }
     }
 
     private void goToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        finish();
+        startActivity(intent);
     }
 
     private void startFirebaseUI() {
@@ -73,9 +78,16 @@ public class LoginActivity extends AppCompatActivity {
                 // Fallo en la autenticacion, nos quedamos aquí
                 if (response != null) {
                     Toast.makeText(this, "Usuario inválido. Verifique email y password", Toast.LENGTH_SHORT).show();
+                    gotoLoginActivity();
                 }
             }
         }
+    }
+
+    private void gotoLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
 

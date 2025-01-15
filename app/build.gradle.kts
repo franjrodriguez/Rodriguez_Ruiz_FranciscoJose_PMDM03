@@ -46,7 +46,7 @@ dependencies {
     implementation ("com.firebaseui:firebase-ui-auth:8.0.2")
 
     // Firestore
-    implementation ("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-firestore:24.0.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

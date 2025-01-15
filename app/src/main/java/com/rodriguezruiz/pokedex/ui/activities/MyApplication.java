@@ -7,6 +7,12 @@ public class MyApplication extends Application {
 
     private static String userUID;
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        FirebaseApp.initializeApp(this); // Inicializa Firebase
+    }
+
     public static void setUserUID(String uid) {
         userUID = uid;
     }

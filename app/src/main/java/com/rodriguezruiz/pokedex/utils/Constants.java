@@ -17,6 +17,6 @@ public class Constants {
     public static final String SETTING_DELETE = "delete_pokemon_preferences";
     public static final String SETTING_LOGOUT = "logout_preference";
     // Global Firestore
-    public static final String COLLECTION_USER = "pokemon_trainers";
-    public static final String COLLECTION_NAME = "captured_pokemons";
+    public static final String COLLECTION_TRAINERS = "pokemon_trainers";
+    public static final String COLLECTION_CAPTURED = "captured_pokemons";
 }
