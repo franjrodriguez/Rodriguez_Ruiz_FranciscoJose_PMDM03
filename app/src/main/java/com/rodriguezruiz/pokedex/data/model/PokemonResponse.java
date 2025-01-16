@@ -6,10 +6,46 @@ import java.util.List;
 public class PokemonResponse {
     private int id;
     private String name;
-    private int weight;
-    private int height;
+    private Double weight;
+    private Double height;
     private Sprites sprites;
     private List<Type> types;
+
+    public PokemonResponse() {
+    }
+
+    public PokemonResponse(int id, String name, Double weight, Double height, Sprites sprites, List<Type> types) {
+        this.id = id;
+        this.name = name;
+        this.weight = weight;
+        this.height = height;
+        this.sprites = sprites;
+        this.types = types;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public void setSprites(Sprites sprites) {
+        this.sprites = sprites;
+    }
+
+    public void setTypes(List<Type> types) {
+        this.types = types;
+    }
 
     public int getId() {
         return id;
@@ -19,11 +55,11 @@ public class PokemonResponse {
         return name;
     }
 
-    public int getWeight() {
+    public Double getWeight() { 
         return weight;
     }
 
-    public int getHeight() {
+    public Double getHeight() {
         return height;
     }
 

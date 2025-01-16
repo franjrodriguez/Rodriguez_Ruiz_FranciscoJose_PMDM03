@@ -277,9 +277,19 @@ public class MainActivity extends AppCompatActivity {
                 if (pokemonGetted != null) {
                     // Se convierte el objeto consumido a la clase PokemonData
                     List<String> types = new ArrayList<>();
-                    for (PokemonResponse.Type type = pokemonGetted.getTypes()) {
+                    for (PokemonResponse.Type type : pokemonGetted.getTypes()) {
                         types.add(type.getType().getName());
                     }
+                    PokemonData newPokemon = new PokemonData(
+                            pokemonToCapture.getId() + "",
+                            pokemonToCapture.getName(),
+                            pokemonToCapture.getHeight(),
+                            pokemonToCapture.getWeight(),
+                            pokemonToCapture.getSprites().getFrontDefault(),
+                            types
+                    );
+                    // Almacenamos en BD Firestore
+                    addPokemon(newPokemon);
                 }
             }
 
