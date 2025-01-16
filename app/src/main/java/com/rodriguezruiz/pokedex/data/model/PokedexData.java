@@ -1,7 +1,7 @@
 package com.rodriguezruiz.pokedex.data.model;
 
 public class PokedexData {
-    private int id;
+    private String id;
     private String name;
     private String url;
     private boolean isCaptured;
@@ -32,14 +32,12 @@ public class PokedexData {
 
     public void setUrl(String url) {
         this.url = url;
+        // Toma la ultima parte de la URL para coger el numero del Pokemon en la lista Pokédex
+        String[] urlPartes = this.url.split("/");
+        this.id = urlPartes[urlPartes.length - 1];
     }
 
-    public int getId() {
-        String[] urlPartes = url.split("/");
-        return Integer.parseInt(urlPartes[urlPartes.length - 1]);
-    }
-
-    public void setId(int number) {
-        this.id = number;
+    public String getId() {
+        return this.id;
     }
 }

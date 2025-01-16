@@ -61,6 +61,10 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         notifyDataSetChanged();
     }
 
+    public String getPokemonIdAtPosition(int position) {
+        return pokemonDataCaptured.get(position).getId();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView fotoImageView;
         private TextView indexTextView, nameTextView, typesTextView, weightTextView, heightTextView;
