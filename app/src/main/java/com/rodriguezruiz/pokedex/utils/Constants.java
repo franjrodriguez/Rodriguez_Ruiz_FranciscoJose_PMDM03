@@ -12,12 +12,11 @@ public class Constants {
     public static final int LIMIT = 150;
 
     // Global SharedPreferences
-    public static final String LANGUAGE = "language_preference";
-    public static final String LANGUAGE_DEFAULT = "es";
+    public static final String SETTING_LANGUAGE = "language";
     public static final String SETTING_ABOUT = "about_preference";
-    public static final String SETTING_LANGUAGE = "language_preference";
-    public static final String SETTING_DELETE = "delete_pokemon_preferences";
-    public static final String SETTING_LOGOUT = "logout_preference";
+    public static final String SETTING_DELETE = "delete";
+    public static final String SETTING_LOGOUT = "logout";
+    public static final String SETTING_LANGUAGE_DEFAULT = "es";
 
     // Global Firestore
     public static final String COLLECTION_TRAINERS = "pokemon_trainers";

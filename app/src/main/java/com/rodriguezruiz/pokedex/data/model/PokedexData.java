@@ -6,8 +6,10 @@ public class PokedexData {
     private String url;
     private boolean isCaptured;
 
-    public PokedexData() {
-        this.isCaptured = false;
+    public PokedexData() {}
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public boolean isCaptured() {
@@ -32,9 +34,6 @@ public class PokedexData {
 
     public void setUrl(String url) {
         this.url = url;
-        // Toma la ultima parte de la URL para coger el numero del Pokemon en la lista Pokédex
-        String[] urlPartes = this.url.split("/");
-        this.id = urlPartes[urlPartes.length - 1];
     }
 
     public String getId() {

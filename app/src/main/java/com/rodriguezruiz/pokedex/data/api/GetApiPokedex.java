@@ -40,7 +40,7 @@ public class GetApiPokedex {
             PokedexApiService service = retrofit.create(PokedexApiService.class);
             Log.d(TAG, "GetApiPokedex -> Servicio creado");
 
-            Call<PokedexResponse> pokedexResponseCall = service.getPokemonList(LIMIT, OFFSET);
+            Call<PokedexResponse> pokedexResponseCall = service.getPokedex(LIMIT, OFFSET);
             Log.d(TAG, "GetApiPokedex -> Llamada creada con LIMIT=" + LIMIT + " y OFFSET=" + OFFSET);
 
             pokedexResponseCall.enqueue(new Callback<PokedexResponse>() {
@@ -53,6 +53,13 @@ public class GetApiPokedex {
                         PokedexResponse pokedexResponse = response.body();
                         if (pokedexResponse != null && pokedexResponse.getResults() != null) {
                             ArrayList<PokedexData> listaPokedex = pokedexResponse.getResults();
+                            // Revisa la lista para actualizar el id del pokedex en funcion del url
+                            for (PokedexData item : listaPokedex) {
+                                // Toma la ultima parte de la URL para coger el numero del Pokemon en la lista Pokédex
+                                String[] urlPartes = item.getUrl().split("/");
+                                item.setId(urlPartes[urlPartes.length - 1]);
+                                item.setCaptured(false);
+                            }
                             Log.d(TAG, "GetApiPokedex -> Pokemon obtenidos: " + listaPokedex.size());
                             listener.onLoaded(listaPokedex);
                         } else {

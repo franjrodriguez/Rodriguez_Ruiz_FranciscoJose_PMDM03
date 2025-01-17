@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private void goToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void startFirebaseUI() {
@@ -61,6 +62,9 @@ public class LoginActivity extends AppCompatActivity {
                 .setTheme(R.style.PokemonTheme)
                 .setLogo(R.drawable.logopokemon)
                 .build();
+
+        // Inicia la activity de autenticacion
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -80,8 +84,8 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 // Fallo en la autenticacion, nos quedamos aquí
                 if (response != null) {
-                    Toast.makeText(this, "Usuario inválido. Verifique email y password", Toast.LENGTH_SHORT).show();
-                    gotoLoginActivity();
+                    String msg = R.string.login_invalido + "";
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                 }
             }
         }

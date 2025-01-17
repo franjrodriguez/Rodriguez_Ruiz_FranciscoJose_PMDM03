@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/pokedexFragment">
+    app:startDestination="@id/capturedFragment">
 
     <fragment
         android:id="@+id/capturedFragment"
@@ -20,11 +20,15 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.rodriguezruiz.pokedex.ui.fragment.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        android:label="fragment_settings" />
 
     <fragment
         android:id="@+id/detailPokemonFragment"
         android:name="com.rodriguezruiz.pokedex.ui.fragment.DetailPokemonFragment"
-        android:label="DetailPokemonFragment" />
+        tools:layout="@layout/fragment_detail_pokemon">
+        <argument
+            android:name="pokemonData"
+            app:argType="com.rodriguezruiz.pokedex.data.model.PokemonData" />
+    </fragment>
+
 </navigation>

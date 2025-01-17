@@ -2,7 +2,7 @@
     <!-- SharedPreferences -->
     <string name="idioma">Idioma</string>
     <string name="preferences_diaglog_title">Cambiar idioma (castellano/inglés)</string>
-    <string name="eliminar_pokemon_capturado">Eliminar Pokémon capturado</string>
+    <string name="eliminar_pokemon_capturado">Permitir eliminar Pokemons</string>
     <string name="eliminar_pokemon_summary">Activar o desactivar la eliminación de Pokémon desde la pestaña Pokémon</string>
     <string name="informacion_about">Información sobre la aplicación</string>
     <string name="sesion_finalizada">Sesión de usuario finalizada</string>
@@ -10,9 +10,20 @@
     <string name="about">Sobre la aplicación</string>
     <string name="cerrar_sesion">Cerrar sesión de usuario</string>
     <string name="cerrar_sesion_summary">Desconectar de la base de datos online</string>
+    <string name="about_summary">Sobre el desarrollador y la versión</string>
 
+    <string-array name="languages">
+        <item>Castellano</item>
+        <item>Inglés</item>
+    </string-array>
+
+    <string-array name="language_codes">
+        <item>es</item>
+        <item>en</item>
+    </string-array>
+
+    // Resto de cadenas
     <string name="app_name">Pokedex</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_pokedex">Pokedex</string>
     <string name="menu_captured">Capturados</string>
     <string name="menu_settings">Ajustes</string>
@@ -46,14 +57,8 @@
     <string name="msgCapturedPokemon">Has capturado a</string>
     <string name="msgDeleted">Pokémon eliminado</string>
     <string name="msg_without_internet">No hay conexión a Internet</string>
+    <string name="login_invalido">Usuario inválido. Verifique email y password</string>
+    <string name="pokemons_capturados_toolbar">Pokemons Capturados</string>
+    <string name="detalle_pokemon">Conóceme más</string>
 
-    <string-array name="language_entries">
-        <item>Castellano</item>
-        <item>Inglés</item>
-    </string-array>
-
-    <string-array name="language_values">
-        <item>es</item>
-        <item>en</item>
-    </string-array>
 </resources>

@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -21,11 +22,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rodriguezruiz.pokedex.R;
 import com.rodriguezruiz.pokedex.databinding.FragmentCapturedBinding;
 import com.rodriguezruiz.pokedex.ui.activities.MainActivity;
 import com.rodriguezruiz.pokedex.ui.adapter.CapturedPokemonAdapter;
 import com.rodriguezruiz.pokedex.ui.adapter.PokemonViewHolder;
 import com.rodriguezruiz.pokedex.viewmodel.PokemonViewModel;
+
+import java.util.ArrayList;
 
 public class CapturedFragment extends Fragment {
 
@@ -33,13 +37,21 @@ public class CapturedFragment extends Fragment {
     private static CapturedPokemonAdapter adapter;
     private FragmentCapturedBinding binding;
     private PokemonViewModel pokemonViewModel;
-    private Context context;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentCapturedBinding.inflate(inflater, container, false);
+
+        // Titulo toolbar
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.pokemons_capturados_toolbar);
+        }
+
+        // Configurar ItemTouchHelper (permite el desplazamiento del cardview)
+        setupItemTouchHelper();
+
         return binding.getRoot();
     }
 
@@ -56,14 +68,20 @@ public class CapturedFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new CapturedPokemonAdapter();
+        adapter = new CapturedPokemonAdapter(new ArrayList<>(), getActivity());
         recyclerView.setAdapter(adapter);
 
         // Almacena la lista cargada en el ViewModel
         pokemonViewModel = new ViewModelProvider(requireActivity()).get(PokemonViewModel.class);
         pokemonViewModel.getPokemonData().observe(getViewLifecycleOwner(), capturedListPokemons -> {
-            adapter.updateList(capturedListPokemons);
+            if (capturedListPokemons != null) {
+                adapter.updateList(capturedListPokemons);
+            }
         });
+    }
+
+    private void setupItemTouchHelper() {
+        Context context = requireContext();
 
         // Configurar el ItemTouchHelper para el desplazamiento de la muerte
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -78,10 +96,10 @@ public class CapturedFragment extends Fragment {
                 String pokemonId = adapter.getPokemonIdAtPosition(position);
 
                 // Procede con el borrado de la base de datos
-                ((MainActivity) context).deletePokemon(pokemonId);
-
-                // Actualiza el recyclerview.
-                adapter.notifyItemRemoved(position); // Notifica al adapter que se ha eliminado un item
+                if (context instanceof MainActivity) {
+                    ((MainActivity) context).deletePokemon(pokemonId);
+                    adapter.removePokemonAdapter(position);
+                }
             }
 
             @Override

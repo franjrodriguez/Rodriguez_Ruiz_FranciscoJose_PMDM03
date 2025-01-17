@@ -1,8 +1,9 @@
 package com.rodriguezruiz.pokedex.ui.activities;
 
 import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
-import static com.rodriguezruiz.pokedex.utils.Constants.LANGUAGE;
-import static com.rodriguezruiz.pokedex.utils.Constants.LANGUAGE_DEFAULT;
+import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_LANGUAGE;
+import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_LANGUAGE_DEFAULT;
+import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_DELETE;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,6 +25,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
@@ -43,6 +46,7 @@ import com.rodriguezruiz.pokedex.data.api.GetApiPokedex;
 import com.rodriguezruiz.pokedex.databinding.ActivityMainBinding;
 import com.rodriguezruiz.pokedex.data.model.PokedexData;
 import com.rodriguezruiz.pokedex.listener.OnPokedexLoadedListener;
+import com.rodriguezruiz.pokedex.ui.fragment.DetailPokemonFragment;
 import com.rodriguezruiz.pokedex.viewmodel.PokedexViewModel;
 import com.rodriguezruiz.pokedex.viewmodel.PokemonViewModel;
 
@@ -61,12 +65,14 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PokedexAdapter listaPokemonAdapter;
     private PokemonRepository repository;
-    private String userUID;
     private ArrayList<PokemonData> listPokemon;
     private ArrayList<PokedexData> listPokedex;
     private PokedexViewModel pokedexViewModel;
     private PokemonViewModel pokemonViewModel;
     private ProgressBar progressBar;
+
+    public String userUID;
+    public boolean isPossibleDeletePokemon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         // Prepara la pregressBar para los procesos asincronos
         progressBar = binding.progressBar;
 
-
         // Inicializa el ViewMOdel
         pokemonViewModel = new ViewModelProvider(this).get(PokemonViewModel.class);
         pokedexViewModel = new ViewModelProvider(this).get(PokedexViewModel.class);
@@ -88,10 +93,15 @@ public class MainActivity extends AppCompatActivity {
         userUID = MyApplication.getUserUID();
         Log.i(TAG, "MainActivity -> userUID: " + userUID);
 
-        repository = new PokemonRepository();        // Instanciamos PokemonRepository pasandole el UID del usuario
 
         // Inicializa la interfaz de usuario
         initializeUI();
+
+        // Instanciamos el repositorio para acceder a la BD y empezamos a cargar API y BD documents
+        repository = new PokemonRepository(userUID);        // Instanciamos PokemonRepository pasandole el UID del usuario
+
+        // Verificar que el userUID se encuentra dado de alta en la base de datos
+        repository.checkTrainerExist(userUID);
 
         // Cargar los datos desde Firestore y la API de forma asincrona
         loadCapturedPokemonFromFirestore();
@@ -102,36 +112,43 @@ public class MainActivity extends AppCompatActivity {
         updatePokedexWithCapturedPokemons();
     }
 
-    public void updatePokedexWithCapturedPokemons() {
-        viewWaiting(true);
-        // Activar la progressBar
-        progressBar.setVisibility(View.VISIBLE);
+    public void initializeUI() {
+        // Cargar el lenguaje almacenado en la SharedPreferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String languageCode = preferences.getString(SETTING_LANGUAGE, SETTING_LANGUAGE_DEFAULT);
+        setLocale(languageCode);
 
-        // Prepara los ViewModel para cargarlos
-        ArrayList<PokemonData> capturedPokemons = pokemonViewModel.getPokemonData().getValue();
-        ArrayList<PokedexData> pokedesList = pokedexViewModel.getPokedexData().getValue();
+        // Lee el estado del DELETE_POKEMON (Si aún no existe se asigna false -> NO se pueden borrar)
+        isPossibleDeletePokemon = preferences.getBoolean(SETTING_DELETE, false);
 
-        if (capturedPokemons != null && pokedesList != null) {
-            for (PokemonData captured : capturedPokemons) {
-                for (PokedexData pokedex : pokedesList) {
-                    if (captured.getId().equals(pokedex.getId())) {
-                        pokedex.setCaptured(true);
-                        break; // Corto el bucle interno para que pase al siguiente capturado
-                    }
-                }
-            }
-            listaPokemonAdapter.notifyDataSetChanged();
+        // Establece contenido de la toolbar
+        toolbar = binding.toolbar;
+        setSupportActionBar(toolbar);
+
+        // Configurar el controlador de navegacion para los fragment
+        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (navHostFragment != null) {
+            navController = NavHostFragment.findNavController(navHostFragment);
+            NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
+            NavigationUI.setupActionBarWithNavController(this, navController);
+        } else {
+            Log.e(TAG, "NavHostFragment no encontrado");
         }
-        // Desactiva la progressBar
-        viewWaiting(false);
+        binding.bottomNavigation.setOnItemSelectedListener(this::selectedBottomMenu);
+        configureActionBar();
     }
 
-    private void viewWaiting(boolean b) {
-        if (b) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
+    public void loadCapturedPokemonFromFirestore() {
+        viewWaiting(true);
+        if (!isNetworkAvailable()) {
+            Log.e(TAG, "No hay conexión a Internet");
+            Toast.makeText(this, R.string.no_conection, Toast.LENGTH_LONG).show();
+            return;
         }
+        // *****
+        Log.i(TAG, "MainActivity -> Leyendo los pokemoncapturados en Firestore");
+        readAllPokemon();
+        viewWaiting(false);
     }
 
     public void loadPokedexFromApi() {
@@ -155,6 +172,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         viewWaiting(false);
+    }
+
+    public void updatePokedexWithCapturedPokemons() {
+        viewWaiting(true);
+        // Activar la progressBar
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Prepara los ViewModel para cargarlos
+        ArrayList<PokemonData> capturedPokemons = pokemonViewModel.getPokemonData().getValue();
+        ArrayList<PokedexData> pokedexList = pokedexViewModel.getPokedexData().getValue();
+
+        if (capturedPokemons != null && pokedexList != null) {
+            for (PokemonData captured : capturedPokemons) {
+                for (PokedexData pokedex : pokedexList) {
+                    if (captured.getId().equals(pokedex.getId())) {
+                        pokedex.setCaptured(true);
+                        break; // Corto el bucle interno para que pase al siguiente capturado
+                    }
+                }
+            }
+            listaPokemonAdapter.notifyDataSetChanged();
+        }
+        // Desactiva la progressBar
+        viewWaiting(false);
+    }
+
+    private void viewWaiting(boolean b) {
+        if (b) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     public void loadPokemonFromApi(String IdPokemon, PokemonCallBack callback) {
@@ -186,41 +235,6 @@ public class MainActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void loadCapturedPokemonFromFirestore() {
-        viewWaiting(true);
-        if (!isNetworkAvailable()) {
-            Log.e(TAG, "No hay conexión a Internet");
-            Toast.makeText(this, R.string.no_conection, Toast.LENGTH_LONG).show();
-            return;
-        }
-        // *****
-        Log.i(TAG, "MainActivity -> Leyendo los pokemoncapturados en Firestore");
-        readAllPokemon();
-        viewWaiting(false);
-    }
-
-    public void initializeUI() {
-        // Cargar el lenguaje almacenado en la SharedPreferences
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String languageCode = preferences.getString(LANGUAGE, LANGUAGE_DEFAULT);
-        setLocale(languageCode);
-
-        // Establece contenido de la toolbar
-        toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
-
-        // Configurar el controlador de navegacion para los fragment
-        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        if (navHostFragment != null) {
-            navController = NavHostFragment.findNavController(navHostFragment);
-            NavigationUI.setupWithNavController(binding.bottomNavigation, navController);
-            NavigationUI.setupActionBarWithNavController(this, navController);
-        } else {
-            Log.e(TAG, "NavHostFragment no encontrado");
-        }
-        binding.bottomNavigation.setOnItemSelectedListener(this::selectedBottomMenu);
-        configureActionBar();
-    }
 
     @SuppressLint("NonConstantResourceId")
     private boolean selectedBottomMenu(MenuItem menuItem) {
@@ -241,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
     private void configureActionBar() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.blue_pokemon)));
-            getSupportActionBar().hide();
+            //getSupportActionBar().hide();
         }
     }
 
@@ -281,13 +295,15 @@ public class MainActivity extends AppCompatActivity {
                         types.add(type.getType().getName());
                     }
                     PokemonData newPokemon = new PokemonData(
-                            pokemonToCapture.getId() + "",
-                            pokemonToCapture.getName(),
-                            pokemonToCapture.getHeight(),
-                            pokemonToCapture.getWeight(),
-                            pokemonToCapture.getSprites().getFrontDefault(),
+                            pokemonGetted.getId() + "",
+                            pokemonGetted.getName(),
+                            pokemonGetted.getHeight(),
+                            pokemonGetted.getWeight(),
+                            pokemonGetted.getSprites().getFrontDefault(),
                             types
                     );
+                    String msg = newPokemon.getId() + " | " + newPokemon.getName() + " | " + newPokemon.getHeight() + " | " + newPokemon.getWeight();
+                            Log.i(TAG, "userclickedpokemon -> Datos Pokemon capturado: " + msg);
                     // Almacenamos en BD Firestore
                     addPokemon(newPokemon);
                 }
@@ -311,9 +327,11 @@ public class MainActivity extends AppCompatActivity {
     public void logout() {
         // Cerrar sesión de Firebase
         FirebaseAuth.getInstance().signOut();
-        // Redirigir a la actividad de inicio de sesión
-        startActivity(new Intent(this, LoginActivity.class));
         Toast.makeText(this, R.string.sesion_finalizada, Toast.LENGTH_SHORT).show();
+
+        // Redirigir a la actividad de inicio de sesión
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     private void addPokemon(PokemonData newPokemon) {
@@ -355,13 +373,17 @@ public class MainActivity extends AppCompatActivity {
         repository.getAllPokemons(userUID, new PokemonListCallback() {
             @Override
             public void onSuccess(ArrayList<PokemonData> capturedListPokemons) {
-              //  Log.d(TAG + "=>MAIN_ACTIVITY", "Pokemons received: " + pokemons.size());
+                Log.d(TAG, "readAllPokemons -> Pokemons recibidos desde BD: " + capturedListPokemons.size());
                 int numberCaptured = capturedListPokemons.size();
                 if (numberCaptured < 1) {
                     Toast.makeText(MainActivity.this, R.string.any_captured, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String msg = "" + R.string.have + numberCaptured + R.string.captured_pokemons;
+                // Se almacena en el ViewModel para su muestreo en recyclerview
+                pokemonViewModel.setPokemonData(capturedListPokemons);
+
+                Log.i(TAG, "readAllPokemon -> HA LEIDO POKEMONS CAPTURADOS");
+                String msg = getString(R.string.have) + numberCaptured + getString(R.string.captured_pokemons);
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
 
@@ -374,4 +396,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void userClickedDetailPokemon(PokemonData itemPokemonData) {
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("pokemon", itemPokemonData);
+        navController.navigate(R.id.detailPokemonFragment);
+    }
 }

@@ -4,43 +4,28 @@ import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_ABOUT;
 import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_DELETE;
 import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_LANGUAGE;
 import static com.rodriguezruiz.pokedex.utils.Constants.SETTING_LOGOUT;
+import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.rodriguezruiz.pokedex.ui.activities.MainActivity;
 import com.rodriguezruiz.pokedex.R;
-import com.rodriguezruiz.pokedex.databinding.FragmentSettingsBinding;
+import com.rodriguezruiz.pokedex.utils.Constants;
+
 import java.util.Locale;
 import java.util.Objects;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-
-    private FragmentSettingsBinding binding;
-    private SharedPreferences sharedPreferences;
-  //  private final Context context;
-
-    public SettingsFragment() {
-        super();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentSettingsBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
 
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
@@ -51,53 +36,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         setupDeletePokemonPreference();
         setupAboutPreference();
         setupLogoutPreference();
-    }
-
-    private void setupLogoutPreference() {
-        // Configurar listener para la preferencia de "Cerrar sesión"
-        Preference logoutPreference = findPreference(SETTING_LOGOUT);
-        if (logoutPreference != null) {
-            logoutPreference.setOnPreferenceClickListener(preference -> {
-                MainActivity mainActivity = (MainActivity) requireActivity();
-                mainActivity.logout();
-                return true;
-            });
-        }
-    }
-
-    private void setupAboutPreference() {
-        // Configurar listener para la preferencia de "Acerca de..."
-        Preference aboutPreference = findPreference(SETTING_ABOUT);
-        if (aboutPreference != null) {
-            aboutPreference.setOnPreferenceClickListener(preference -> {
-                showAbout();
-                return true;
-            });
-        }
-    }
-
-    private void showAbout() {
-        // Mostrar diálogo con información del desarrollador y versión
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        String message = String.format("%s\n\n%s", getString(R.string.copyright), getString(R.string.version));
-
-        builder.setTitle(R.string.about)
-                .setMessage(message)
-                .setIcon(R.drawable.logopokemon)
-                .setPositiveButton(R.string.ok_button, (dialog, which) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void setupDeletePokemonPreference() {
-        // Configurar listener para la preferencia de permitir Borrar pokemon
-        SwitchPreferenceCompat deletePreference = findPreference(SETTING_DELETE);
-        if (deletePreference != null) {
-            deletePreference.setOnPreferenceChangeListener((preference, newValue) -> {
-                boolean isEnabledDeletePokemon = (boolean) newValue;
-                return true;
-            });
-        }
     }
 
     private void setupLanguagePreference() {
@@ -123,20 +61,103 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         requireActivity().recreate();
     }
 
+    private void setupDeletePokemonPreference() {
+        // Configurar listener para la preferencia de permitir Borrar pokemon
+        SwitchPreferenceCompat deletePreference = findPreference(SETTING_DELETE);
+        if (deletePreference != null) {
+            deletePreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                boolean isEnabledDeletePokemon = (boolean) newValue;
+                SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
+                editor.putBoolean(SETTING_DELETE, isEnabledDeletePokemon);
+                editor.apply();
+                return true;
+            });
+        }
+    }
+
+    private void setupAboutPreference() {
+        // Configurar listener para la preferencia de "Acerca de..."
+        Preference aboutPreference = findPreference(Constants.SETTING_ABOUT);
+        if (aboutPreference == null) {
+            Log.e(TAG, "SettingsFragment -> no se pudo encontrar la preferencia About");
+        }
+
+        aboutPreference.setOnPreferenceClickListener(preference -> {
+            Log.d(TAG, "SettingsFragment -> Click en preferencia About");
+            showAboutDialog();
+            return true;
+        });
+    }
+
+    private void showAboutDialog() {
+        Context context = getActivity();
+        if (context == null) {
+            Log.e(TAG, "SettingsFragment -> Contexto no disponible");
+            return;
+        }
+        // Mostrar diálogo
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            String message = String.format("%s\n\n%s",
+                    getString(R.string.copyright),
+                    getString(R.string.version));
+
+            builder.setTitle(R.string.about)
+                    .setMessage(message)
+                    .setIcon(R.drawable.logopokemon)
+                    .setPositiveButton(R.string.ok_button, (dialog, which) -> {
+                        Log.d(TAG, "SharedPreferences -> Dialogo cerrado");
+                        dialog.dismiss();
+                    })
+                    .create()
+                    .show();
+        } catch (Exception e) {
+            Log.e(TAG, "SharedPreferences -> Error al mostrar el dialogo About: " + e.getMessage());
+        }
+    }
+
+    private void setupLogoutPreference() {
+        // Configurar listener para la preferencia de "Cerrar sesión"
+        Preference logoutPreference = findPreference(SETTING_LOGOUT);
+        if (logoutPreference != null) {
+            logoutPreference.setOnPreferenceClickListener(preference -> {
+                showLogoutConfirmationDialog();
+                return true;
+            });
+        }
+    }
+
+    private void showLogoutConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que quieres cerrar la sesión?")
+                .setPositiveButton("Sí", (dialog, which) -> {
+                    MainActivity mainActivity = (MainActivity) requireActivity();
+                    mainActivity.logout();                })
+                .setNegativeButton("Cancelar", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        Objects.requireNonNull(getPreferenceScreen().getSharedPreferences()).registerOnSharedPreferenceChangeListener(this);
-    }
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);    }
 
     @Override
     public void onPause() {
         super.onPause();
-        Objects.requireNonNull(getPreferenceScreen().getSharedPreferences()).unregisterOnSharedPreferenceChangeListener(this);
-    }
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String key) {
-
+        // Maneja cambios en las preferencias
+        assert key != null;
+        if (key.equals(Constants.SETTING_LANGUAGE)) {
+            String languageCode = sharedPreferences.getString(key, "es");
+            updateLanguage(languageCode);
+        }
     }
 }

@@ -1,11 +1,17 @@
 package com.rodriguezruiz.pokedex.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.PropertyName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class PokemonData implements Serializable {
+public class PokemonData implements Serializable, Parcelable {
     @PropertyName("id")
     private String id;
 
@@ -94,4 +100,41 @@ public class PokemonData implements Serializable {
     public void setTypes(List<String> types) {
         this.types = types;
     }
+
+    protected PokemonData(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        height = in.readDouble();
+        weight = in.readDouble();
+        urlImage = in.readString();
+        types = new ArrayList<>();
+        in.readStringList(types);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeDouble(height);
+        dest.writeDouble(weight);
+        dest.writeString(urlImage);
+        dest.writeStringList(types);
+    }
+
+    public static final Creator<PokemonData> CREATOR = new Creator<PokemonData>() {
+        @Override
+        public PokemonData createFromParcel(Parcel in) {
+            return new PokemonData(in);
+        }
+
+        @Override
+        public PokemonData[] newArray(int size) {
+            return new PokemonData[size];
+        }
+    };
 }

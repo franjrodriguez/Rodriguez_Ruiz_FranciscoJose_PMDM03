@@ -55,7 +55,6 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.ViewHold
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.default_background));
             holder.nombreTextView.setTypeface(holder.nombreTextView.getTypeface(), Typeface.NORMAL);
         }
-
         Picasso.get()
                 .load(URL_SPRITE + itemFromPokedexSelected.getId() + TYPE_SPRITE)
                 .placeholder(R.drawable.pokemon_placeholder)
