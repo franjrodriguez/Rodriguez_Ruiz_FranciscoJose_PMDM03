@@ -34,10 +34,6 @@ public class PokedexFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentPokedexBinding.inflate(inflater, container, false);
 
-        // Titulo toolbar
-        if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.pokedex_title);
-        }
         return binding.getRoot();
     }
 
@@ -50,7 +46,7 @@ public class PokedexFragment extends Fragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
 
-        // Inicializa el adaptador primero
+        // Inicializa el adaptador
         adapter = new PokedexAdapter(new ArrayList<>(), getActivity());
         recyclerView.setAdapter(adapter);
 

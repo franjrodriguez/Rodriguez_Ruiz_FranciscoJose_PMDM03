@@ -20,11 +20,22 @@ import com.rodriguezruiz.pokedex.R;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Actividad que maneja el proceso de autenticación de usuarios utilizando FirebaseUI.
+ * Esta actividad permite a los usuarios iniciar sesión con correo electrónico o Google.
+ * Si el usuario ya está autenticado, redirige a la actividad principal (MainActivity).
+ */
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 11011;
     private FirebaseAuth auth;
 
-
+    /**
+     * Método llamado cuando se crea la actividad.
+     * Verifica si el usuario ya está autenticado. Si es así, redirige a MainActivity.
+     * Si no, inicia el proceso de autenticación con FirebaseUI.
+     *
+     * @param savedInstanceState Estado guardado de la actividad, si existe.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +55,19 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Redirige a la actividad principal (MainActivity) y finaliza la actividad actual.
+     */
     private void goToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
+    /**
+     * Inicia el proceso de autenticación con FirebaseUI.
+     * Configura los proveedores de autenticación (correo electrónico y Google) y lanza la actividad de inicio de sesión.
+     */
     private void startFirebaseUI() {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -67,6 +85,14 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    /**
+     * Método llamado cuando se obtiene un resultado de una actividad lanzada con startActivityForResult.
+     * Maneja el resultado del proceso de autenticación.
+     *
+     * @param requestCode Código de solicitud que se utilizó para iniciar la actividad.
+     * @param resultCode  Código de resultado devuelto por la actividad.
+     * @param data        Datos adicionales devueltos por la actividad.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -91,6 +117,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Redirige a la actividad de inicio de sesión (LoginActivity) y finaliza la actividad actual.
+     */
     private void gotoLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

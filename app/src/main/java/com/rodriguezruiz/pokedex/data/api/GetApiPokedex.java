@@ -23,10 +23,21 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Clase que maneja las solicitudes a la API de Pokédex para obtener la lista de Pokémon
+ * y los detalles de un Pokémon específico.
+ */
 public class GetApiPokedex {
 
     private PokedexResponse pokedexResponse = new PokedexResponse();
 
+    /**
+     * Obtiene la lista de Pokémon desde la API utilizando Retrofit.
+     * Este método configura Retrofit, realiza la llamada a la API y maneja la respuesta.
+     * Si la respuesta es valida, se procesa la lista de Pokémon y se notifica al listener.
+     *
+     * @param listener Listener que será notificado cuando la lista de Pokémon esté cargada.
+     */
     public void gettingListPokedex(OnPokedexLoadedListener listener) {
         Log.d(TAG, "GetApiPokedex -> Iniciando configuración de Retrofit");
         try {
@@ -90,6 +101,14 @@ public class GetApiPokedex {
         }
     }
 
+    /**
+     * Obtiene los detalles de un Pokémon específico desde la API utilizando Retrofit.
+     * Este método configura Retrofit, realiza la llamada a la API y maneja la respuesta.
+     * Si la respuesta es exitosa, se notifica al listener con los detalles del Pokémon.
+     *
+     * @param pokemonId El ID del Pokémon del cual se desean obtener los detalles.
+     * @param listener  Listener que será notificado cuando los detalles del Pokémon estén cargados.
+     */
     public void gettingPokemonDetail(String pokemonId, OnPokemonLoadedListener listener) {
         Log.d(TAG, "GetApiPokedex -> Iniciando petición a la API");
         Retrofit retrofit = new Retrofit.Builder()

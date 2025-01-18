@@ -37,6 +37,7 @@ public class CapturedFragment extends Fragment {
     private static CapturedPokemonAdapter adapter;
     private FragmentCapturedBinding binding;
     private PokemonViewModel pokemonViewModel;
+    private boolean isPossibleDeletePokemon = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -44,11 +45,11 @@ public class CapturedFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentCapturedBinding.inflate(inflater, container, false);
 
-        // Titulo toolbar
-        if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.pokemons_capturados_toolbar);
+        // Obtener el permiso para borrar o no desde sharedpreferences
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            isPossibleDeletePokemon = mainActivity.getPermissionToDelete();
         }
-
         // Configurar ItemTouchHelper (permite el desplazamiento del cardview)
         setupItemTouchHelper();
 
@@ -59,19 +60,16 @@ public class CapturedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Carga del SharedPreferences el estado del permiso para borrar Pokemon capturados
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean isEnabledDeletePokemon = sharedPreferences.getBoolean(SETTING_DELETE, false);
-
         // Recoge el arraylist de la lista capturedpokemon (Firestore) cargada en MainActivity
         recyclerView = binding.recyclerviewPokemonList;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        // Inicializa el adaptador
         adapter = new CapturedPokemonAdapter(new ArrayList<>(), getActivity());
         recyclerView.setAdapter(adapter);
 
-        // Almacena la lista cargada en el ViewModel
+        // Vincula la lista existente en el ViewModel
         pokemonViewModel = new ViewModelProvider(requireActivity()).get(PokemonViewModel.class);
         pokemonViewModel.getPokemonData().observe(getViewLifecycleOwner(), capturedListPokemons -> {
             if (capturedListPokemons != null) {
@@ -81,6 +79,7 @@ public class CapturedFragment extends Fragment {
     }
 
     private void setupItemTouchHelper() {
+        if (!isPossibleDeletePokemon) { return; }
         Context context = requireContext();
 
         // Configurar el ItemTouchHelper para el desplazamiento de la muerte

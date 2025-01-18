@@ -40,11 +40,6 @@ public class DetailPokemonFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentDetailPokemonBinding.inflate(inflater, container, false);
 
-        // Titulo toolbar
-        if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.detalle_pokemon);
-        }
-
         // Muestra los datos del Pokemon
         if (pokemonData != null) {
             displayPokemonData();
