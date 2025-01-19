@@ -1,6 +1,11 @@
 package com.rodriguezruiz.pokedex.ui.adapter;
 
+import static com.rodriguezruiz.pokedex.utils.Constants.TAG;
+import static com.rodriguezruiz.pokedex.utils.Constants.TYPE_SPRITE;
+import static com.rodriguezruiz.pokedex.utils.Constants.URL_SPRITE;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +43,19 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
     @Override
     public void onBindViewHolder(@NonNull CapturedPokemonAdapter.ViewHolder holder, int position) {
         PokemonData itemPokemonData = pokemonDataCaptured.get(position);
+//        Log.i(TAG, "onBindViewHolder in CapturedPokemonAdapter -> id:" + itemPokemonData.getId());
+//        Log.i(TAG, "onBindViewHolder in CapturedPokemonAdapter -> name:" + itemPokemonData.getName());
+//        Log.i(TAG, "onBindViewHolder in CapturedPokemonAdapter -> weight:" + itemPokemonData.getWeight());
+//        Log.i(TAG, "onBindViewHolder in CapturedPokemonAdapter -> height:" + itemPokemonData.getHeight());
+//        Log.i(TAG, "onBindViewHolder in CapturedPokemonAdapter -> types:" + itemPokemonData.getTypes());
+//        Log.i(TAG, "onBindViewHolder in CapturedPokemonAdapter -> urlImage:" + itemPokemonData.getUrlImage());
         holder.indexTextView.setText(itemPokemonData.getId());
         holder.nameTextView.setText(itemPokemonData.getName());
         holder.heightTextView.setText(itemPokemonData.getHeight().toString());
         holder.weightTextView.setText(itemPokemonData.getWeight().toString());
         holder.typesTextView.setText(itemPokemonData.getTypes().toString());
-        Picasso.get().load(itemPokemonData.getUrlImage())
+        Picasso.get()
+                .load(itemPokemonData.getUrlImage())
                 .placeholder(R.drawable.pokemon_placeholder)
                 .error(R.drawable.noimage)
                 .into(holder.fotoImageView);
@@ -51,7 +63,8 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
         // Manejamos el evento click del usuario sobre un item
         holder.itemView.setOnClickListener(view -> {
             itemClicked(itemPokemonData, position);
-        });    }
+        });
+    }
 
     private void itemClicked(PokemonData itemPokemonData, int position) {
         // Se pasa la informacion del pokemon clicado a DetailPokemonFragment y se lanza
@@ -79,12 +92,12 @@ public class CapturedPokemonAdapter extends RecyclerView.Adapter<CapturedPokemon
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView fotoImageView;
-        private TextView indexTextView, nameTextView, typesTextView, weightTextView, heightTextView;
+        ImageView fotoImageView;
+        TextView indexTextView, nameTextView, typesTextView, weightTextView, heightTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            fotoImageView = (ImageView) itemView.findViewById(R.id.imagePokemon);
+            fotoImageView = (ImageView) itemView.findViewById(R.id.image_pokemon);
             nameTextView = itemView.findViewById(R.id.tv_pokemon_name);
             indexTextView = itemView.findViewById(R.id.tv_pokedex_index);
             weightTextView = itemView.findViewById(R.id.tv_pokemon_weight);

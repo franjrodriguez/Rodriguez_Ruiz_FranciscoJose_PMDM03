@@ -33,7 +33,6 @@ public class PokedexFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentPokedexBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 

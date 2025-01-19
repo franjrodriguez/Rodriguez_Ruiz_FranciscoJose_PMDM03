@@ -193,25 +193,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updatePokedexWithCapturedPokemons() {
-        Log.i(TAG, "updatePokedexWithCapturedPokemons -> Estoy dentro");
+        Log.i(TAG, "updatePokedexWithCapturedPokemons -> Empezando la busqeuda de capturados en Pokedex para anularlos");
 
         // Prepara los ViewModel para cargarlos
         ArrayList<PokemonData> capturedPokemons = pokemonViewModel.getPokemonData().getValue();
         ArrayList<PokedexData> pokedexList = pokedexViewModel.getPokedexData().getValue();
 
-        if (capturedPokemons != null ) {
-            if (pokedexList != null) {
-                for (PokemonData captured : capturedPokemons) {
-                    for (PokedexData pokedex : pokedexList) {
-                        if (captured.getId().equals(pokedex.getId())) {
-                            pokedex.setCaptured(true);
-                            break; // Corto el bucle interno para que pase al siguiente capturado
-                        }
-                    }
+        if (capturedPokemons == null || pokedexList == null) {
+            // Una o ambas listas es nula, así que no hay nada que comparar.
+            return;
+        }
+
+        ArrayList<PokedexData> updatedPokedexList = new ArrayList<>(pokedexList);
+
+        for (PokemonData captured : capturedPokemons) {
+            Log.i(TAG, "Comparador -> capturado: " + captured.getId());
+            for (PokedexData pokedex : updatedPokedexList) {
+                if (captured.getId().equals(pokedex.getId())) {
+                    Log.i(TAG, "Comparador -> encontrado en pokedex: " + pokedex.getId());
+                    pokedex.setCaptured(true);  // Lo marca como capturado
+                    break; // Corto el bucle interno para que pase al siguiente capturado
                 }
-                listaPokemonAdapter.notifyDataSetChanged();
             }
         }
+
+        for(PokedexData p : updatedPokedexList) {
+            Log.i(TAG, "Estado pokemon " + p.getId() + " -> " + p.isCaptured());
+        }
+
+        // Actualizar el LiveDta con la lista modificada
+        pokedexViewModel.setPokedexData(pokedexList);
+
+        // Notifico al adaptador que los datos se han cambiado
+        listaPokemonAdapter.notifyDataSetChanged();
     }
 
     public void loadPokemonFromApi(String IdPokemon, PokemonCallBack callback) {
